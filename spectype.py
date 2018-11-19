@@ -3,11 +3,15 @@ import emcee
 from numpy import *
 from scipy import interpolate,optimize
 import matplotlib.pyplot as plt
-library_path = "/media/Onion/Data/spectral_library/"
-#library_path = "/media/Onion/Data/lbuchhave_library/"
-library = pickle.load(open(library_path+"library.pkl","rb"))
 import warnings
 warnings.filterwarnings("ignore")
+
+import config_file
+config = config_file.set_config()
+
+library_path = config["spectral_library"]+"lib/"
+library = pickle.load(open(library_path+"library.pkl","rb"))
+
 
 c = 3.*10**5
 
