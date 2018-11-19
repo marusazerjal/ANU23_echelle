@@ -9,7 +9,6 @@ config = config_file.set_config()
 import matplotlib.pyplot as plt
 import average_adjacent_obs
 import wavecal_all
-import run_analysis
 
 binning = config["binning"]
 ccdsec_min = 53
@@ -173,7 +172,13 @@ def main():
     print "Creating fits files"
     average_adjacent_obs.average_adjacent_obs(obslist,tharlist,config["folder"])
     wavecal_all.main(config["folder"])
-    run_analysis.main(config["folder"])
+
+    if config["run_analysis"]:
+
+        print "Running spectral analysis"
+        
+        import run_analysis
+        run_analysis.main(config["folder"])
     
 if __name__ == "__main__":
 
