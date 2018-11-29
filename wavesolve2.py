@@ -6,7 +6,7 @@ from scipy import interpolate,optimize,signal,stats
 
 
 atlas_coarse = loadtxt("atlas_coarse")
-atlas_fine = loadtxt("atlas_fine")
+#atlas_fine = loadtxt("atlas_fine")
 
 def gaussian(x0,xpos):
     return x0[0]*exp(-(xpos-x0[1])**2/(2*x0[2]**2))+x0[3]

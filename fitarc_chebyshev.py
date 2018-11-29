@@ -55,7 +55,7 @@ def fit_chebyshev_lstsq(x0_init,peaklist,shape):
 
 
     niter = 5
-    clip = 0.95
+    clip = 0.9
     i = 0
     mask = peaklist[:,0]==peaklist[:,0]
     while i < niter:
