@@ -136,7 +136,7 @@ def find_trace(fits_extracted):
         trace = []
         for xpos in x[100:-100]:
             try:
-                f = median(fits_extracted_order[:,xpos-50:xpos+50],axis=1)
+                f = nanmedian(fits_extracted_order[:,xpos-50:xpos+50],axis=1)
                 x0 = shiftgaussian(y,f,width)
                 trace.append([xpos,x0[1]])
             except ValueError:
@@ -233,8 +233,8 @@ if __name__ == "__main__":
     ccdsec_min = 53
     ccdsec_max = 2095
 
-    folder = "/media/Onion/Data/ANU23echelle/20181115/bin2/"
-    fitsname = "T2M3Ec-20181115.183014-0040.fits"
+    folder = "/media/Onion/Data/ANU23echelle/20181129/"
+    fitsname = "T2M3Ec-20181129.110305-0204.fits"
     bias = pyfits.getdata(folder+"/temp/masterbias.fits")
     order_masks = pickle.load(open(folder+"/temp/order_masks.pkl","rb"))
     fits = pyfits.getdata(folder+fitsname)-bias
