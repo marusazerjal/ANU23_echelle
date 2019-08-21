@@ -1,11 +1,14 @@
-import os,sys,string,pyfits,pickle,glob
+import os,sys,string,pickle,glob
+from astropy.io import fits as pyfits
 from numpy import *
+import matplotlib
+matplotlib.use('Agg')
 import matplotlib.pyplot as plt
-import config_file
+#import config_file
 from scipy import optimize,signal,interpolate
-config = config_file.set_config()
+#config = config_file.set_config()
 
-binning = config["binning"]
+#binning = config["binning"]
 
 def polyfit_sigclip(x,y,order=2,clip=2,niter=3): ### clip in sigma
     ### do a first fit with a median filter
@@ -23,7 +26,7 @@ def polyfit_sigclip(x,y,order=2,clip=2,niter=3): ### clip in sigma
     stdev = std(polyval(fit,x[mask])-y[mask])
     return fit,stdev,mask
 
-def mask_order(fits,order_masks):
+def mask_order(fits,order_masks, binning=None):
     extraction = []
     x,y = arange(len(fits[0])),arange(len(fits))
     xx,yy = meshgrid(x,y)
@@ -54,6 +57,7 @@ def gaussian(x0,x):
     return x0[0]*exp(-(x-x0[1])**2/(2*x0[2]**2))+x0[3]
 
 def fitgaussian(x,y):
+    print(x, y)
     mask = y == y
     x,y = x[mask],y[mask]
     x = x[2:-2]
@@ -110,8 +114,8 @@ def polyfit_sigclip(x,y,order=2,clip=2,niter=3): ### clip in sigma
     stdev = std(polyval(fit,x[mask])-y[mask])
     return fit,stdev,mask
     
-def find_trace(fits_extracted):
-    print "tracing orders"
+def find_trace(fits_extracted, binning=None):
+    print("tracing orders")
     plt.figure(figsize=(20,20))
 
     trace_array = []
@@ -131,7 +135,7 @@ def find_trace(fits_extracted):
             width = 5.0/binning
         if width < 1.5:
             width = 1.5
-        print "width of extraction",width
+        print("width of extraction",width)
 
         trace = []
         for xpos in x[100:-100]:
@@ -140,8 +144,8 @@ def find_trace(fits_extracted):
                 x0 = shiftgaussian(y,f,width)
                 trace.append([xpos,x0[1]])
             except ValueError:
-                print "Value error while gaussian fitting"
-                print y,f,width
+                print("Value error while gaussian fitting")
+                print(y,f,width)
 
         trace = array(trace)
         trace[:,1] = signal.medfilt(trace[:,1],5)
@@ -203,7 +207,7 @@ def extract_trace(fits_extracted,trace_array):
                 #plt.show()
             
             except:
-                print "Polyfit error"                
+                print("Polyfit error"                )
                 bk = nanmedian(f[bk])*ones(len(f))
 
             background_order.append(sum(bk*weights))

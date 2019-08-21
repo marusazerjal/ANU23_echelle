@@ -3,7 +3,8 @@ from numpy import *
 import matplotlib.pyplot as plt
 from scipy import interpolate,optimize
 import scipy.linalg as scilinalg
-import pyfits
+#~ import pyfits
+from astropy.io import fits
 import pickle
 
 c = 3.*10**5
@@ -225,11 +226,14 @@ def lsd_all(spectrum_array,template_array):
     
     ccf_list = []
 
-    wavemin = 4500
-    wavemax = 6200
+    #~ wavemin = 4500
+    #~ wavemax = 6200
+    wavemin = 4700
+    wavemax = 6400
     
 
 
+    print 'For each order...'
     for order in range(len(spectrum_array)):
 
         spectrum = spectrum_array[order]
@@ -239,11 +243,15 @@ def lsd_all(spectrum_array,template_array):
             spectrum[:,1] = normalise(spectrum[:,1],deg=4)
             
             mask = template_array[:,0] > min(spectrum[:,0])-50
+            # print any(mask)
             mask *= template_array[:,0] < max(spectrum[:,0])+50
             template = template_array[mask]
 
+            print any(mask)
             
             ### Now fit template continuum to spectrum
+            print min(template_array[:,0]), max(template_array[:,0]), min(spectrum[:,0])-50, max(spectrum[:,0])+50
+            print
             fit = interpolate.splrep(template[:,0],template[:,1])
             fit = interpolate.splev(spectrum[:,0],fit)
 
@@ -364,7 +372,7 @@ def average_ccf(ccf_list):
 def run_spectrum(spectrum_file,template_file):
     
     ### format the spectrum file
-    spectrum_hdulist = pyfits.open(spectrum_file)
+    spectrum_hdulist = fits.open(spectrum_file)
     template_array = loadtxt(template_file)
 
     spectrum_array = []
@@ -383,7 +391,8 @@ def run_spectrum(spectrum_file,template_file):
 
     spectrum_name = os.path.basename(spectrum_file)
     spectrum_path = string.replace(spectrum_file,spectrum_name,"")
-
+    
+    print 'Writing to', spectrum_path+"lsd_"+spectrum_name+".pkl"
     pickle.dump([ccf_list,ccf_master,vsini,shift],open(spectrum_path+"lsd_"+spectrum_name+".pkl","wb"))
 
     

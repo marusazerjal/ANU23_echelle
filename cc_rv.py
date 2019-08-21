@@ -1,7 +1,8 @@
 import os,sys,string
 from numpy import *
 import matplotlib.pyplot as plt
-import pyfits
+#~ import pyfits
+from astropy.io import fits
 from scipy import interpolate,optimize,signal,stats
 from PyAstronomy import pyasl
 import spectype
@@ -192,7 +193,7 @@ def average_ccf(ccf_list,vel,vsini=10,shift=0):
 
 
 def main(spectrum,template,vsini=10):
-    spectrum_hdulist = pyfits.open(spectrum)
+    spectrum_hdulist = fits.open(spectrum)
     
     template = loadtxt(template)
 
@@ -322,7 +323,7 @@ def runlsd(spectrum,template):
     
 
 def measure_telluric_rv(spectrum,stellar_template,vsini,vshift):
-    spectrum_hdulist = pyfits.open(spectrum)
+    spectrum_hdulist = fits.open(spectrum)
     stellar_template = loadtxt(stellar_template)
     template = loadtxt("transmission.dat")
     template[:,0] *= 10.

@@ -1,8 +1,11 @@
-import os,sys,glob,string,pyfits
+import os,sys,glob,string
+from astropy.io import fits as pyfits
 from numpy import *
+import matplotlib
+matplotlib.use('Agg')
 import matplotlib.pyplot as plt
-import config_file
-config = config_file.set_config()
+#import config_file
+#config = config_file.set_config()
 
 import identify_order_solarspec
 #import wavesolve
@@ -11,25 +14,31 @@ import fitarc_chebyshev
 
 import pandas
 rv_standards = pandas.read_csv("RV_standard.dat",delim_whitespace=True)
+#print('rv_standards', rv_standards)
 
 
 
 def create_filelist(folder):
-    raw_fitslist = sort(glob.glob(folder+"/temp/ANU23e*.fits"))
+    #print('path', os.path.join(folder, "temp/ANU23e*.fits"))
+    raw_fitslist = sort(glob.glob(os.path.join(folder, "temp/ANU23e*.fits")))
+    #print('raw_fitslist', raw_fitslist)
     for fits in raw_fitslist:
+        print('THE FILE', pyfits.getheader(fits)["OBJECT"], config["init_wave_obj"])
         if pyfits.getheader(fits)["OBJECT"] == config["init_wave_obj"]:
             init_wave_fits = fits
+
+    #print('HHHHHH', raw_fitslist,init_wave_fits)
 
     try:
         return raw_fitslist,init_wave_fits
     except:
-        print "Error, no observation suitable for inital wave calibration, check your init_wave_obj setting in config file"
+        print("Error, no observation suitable for inital wave calibration, check your init_wave_obj setting in config file")
         sys.exit()
 
-def main(folder):
-    raw_fitslist,init_wave_fits = create_filelist(folder)
+def main(folder, config=None):
+    raw_fitslist,init_wave_fits = create_filelist(folder, config=config)
 
-    print "estimating wavelength solution based on stellar spectrum"
+    print("estimating wavelength solution based on stellar spectrum")
 
     if not os.path.exists(folder+"/temp/order_initial_solutions"):
     #if True:
@@ -38,9 +47,9 @@ def main(folder):
         objectname = pyfits.getheader(init_wave_fits)["OBJECT"]
         bcorr = pyfits.getheader(init_wave_fits)["BCORR"]
         mask = rv_standards["Star"] == objectname
-        print rv_standards[mask]["V_r"]
+        print(rv_standards[mask]["V_r"])
         truerv = float(rv_standards[mask]["V_r"])
-        print "rv standard",objectname,truerv,bcorr
+        print("rv standard",objectname,truerv,bcorr)
         
         initial_solutions = identify_order_solarspec.iterate_whole_spectrum(init_wave_spec)
         savetxt(folder+"/temp/init_solutions",array(initial_solutions))
@@ -59,7 +68,7 @@ def main(folder):
     initial_solutions = loadtxt(folder+"/temp/order_initial_solutions")
     
     for fitsname in raw_fitslist:
-        print fitsname
+        print(fitsname)
         fits = pyfits.open(fitsname)
         arc = fits[2].data
         peaklist = wavesolve.run_spectrum(arc,initial_solutions) ### identifies a list of ThAr peaks

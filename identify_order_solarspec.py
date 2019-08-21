@@ -1,7 +1,9 @@
 import os,sys,string
 from numpy import *
+import matplotlib
+matplotlib.use('Agg')
 import matplotlib.pyplot as plt
-import pyfits
+from astropy.io import fits as pyfits
 from scipy import interpolate,optimize,signal,stats
 from PyAstronomy import pyasl
 
@@ -137,7 +139,7 @@ def cross_correlation_to_find_sol(spec,testwave_centre=6500,testwave_width=300,t
         if return_ccf:
             return drv,cc
         else:
-            print x0,snr
+            print(x0,snr)
             #return -1*max(cc)
             return -1*snr
 
@@ -158,7 +160,7 @@ def cross_correlation_to_find_sol(spec,testwave_centre=6500,testwave_width=300,t
     deltaA_init,wave0_init = aa[mask],ww[mask]
 
 
-    print "minimum found for grid search",deltaA_init,wave0_init,min(errarray.flatten())
+    print("minimum found for grid search",deltaA_init,wave0_init,min(errarray.flatten()))
 
     ### use the cc peak to find the correct wave0_init
     x0 = [deltaA_init,wave0_init]
@@ -172,7 +174,7 @@ def cross_correlation_to_find_sol(spec,testwave_centre=6500,testwave_width=300,t
     waveshift = (rvshift/c)*x0[1][0]
     x0[1] -= waveshift
 
-    print "with the correct wavelength shift",x0
+    print("with the correct wavelength shift",x0)
 
 
     if toplot:
@@ -219,7 +221,7 @@ def iterate_whole_spectrum(spectrum):
     initial_solutions = zeros((10,3))
     
     ### do the first order
-    print "finding initial solution for order 0"
+    print("finding initial solution for order 0")
     x0 = cross_correlation_to_find_sol(spectrum[0],testwave_centre=6700,testwave_width=300,testdelta_centre=-0.095,testdelta_width=0.005,toplot=False)
     initial_solutions[0,0] = 0
     initial_solutions[0,1] = x0[0]
@@ -231,7 +233,7 @@ def iterate_whole_spectrum(spectrum):
     
     
     for order in arange(1,norders):
-        print "order",order 
+        print("order",order )
         x0 = cross_correlation_to_find_sol(spectrum[order],testwave_centre=initial_solutions[order-1,2]-wave_between_orders,testwave_width=200,testdelta_centre=initial_solutions[order-1,1],toplot=False)
         initial_solutions[order,0] = order
         initial_solutions[order,1] = x0[0]
@@ -244,10 +246,10 @@ def iterate_whole_spectrum(spectrum):
 def fit_echelle_solution(initial_solutions,norders):
 
     fit_w0,sigma = echelle_equation_fit_sigclip(initial_solutions[:,0],initial_solutions[:,2])
-    print fit_w0
+    print(fit_w0)
 
     fit_deltaA = median(initial_solutions[:,1]/echelle_equation(fit_w0,initial_solutions[:,0]))
-    print fit_deltaA
+    print(fit_deltaA)
     
     savetxt("order_initial_solutions",transpose(array([arange(0,norders),echelle_equation(fit_w0,arange(0,norders)),fit_deltaA*echelle_equation(fit_w0,arange(0,norders))])),fmt="%.3f")
     
@@ -274,10 +276,10 @@ def fit_echelle_solution(initial_solutions,norders):
 def fit_echelle_solution_recc(initial_solutions,norders,spectrum,wshift=0):
 
     fit_w0,sigma = echelle_equation_fit_sigclip(initial_solutions[:,0],initial_solutions[:,2])
-    print fit_w0
+    print(fit_w0)
 
     fit_deltaA = median(initial_solutions[:,1]/echelle_equation(fit_w0,initial_solutions[:,0]))
-    print fit_deltaA
+    print(fit_deltaA)
     
     initial_solutions = transpose(array([arange(0,norders),echelle_equation(fit_w0,arange(0,norders)),fit_deltaA*echelle_equation(fit_w0,arange(0,norders))]))
 
@@ -316,16 +318,16 @@ def fit_echelle_solution_recc(initial_solutions,norders,spectrum,wshift=0):
             epos -= wshift
             wcenter = x0[1]-epos*x0[1]/c
         except:
-            print "Could not cross correlate order",order
-        print wcenter,x0[1]
+            print("Could not cross correlate order",order)
+        print(wcenter,x0[1])
         initial_solutions[order,1] = wcenter
 
 
     fit_w0,sigma = echelle_equation_fit_sigclip(initial_solutions[:,0],initial_solutions[:,1])
-    print fit_w0
+    print(fit_w0)
 
     fit_deltaA = median(initial_solutions[:,2]/echelle_equation(fit_w0,initial_solutions[:,0]))
-    print fit_deltaA
+    print(fit_deltaA)
     
     initial_solutions = transpose(array([arange(0,norders),echelle_equation(fit_w0,arange(0,norders)),fit_deltaA*echelle_equation(fit_w0,arange(0,norders))]))
 

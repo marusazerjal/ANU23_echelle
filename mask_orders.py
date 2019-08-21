@@ -1,8 +1,15 @@
-import os,sys,pyfits,glob,string,pickle
+#!/usr/bin/env python
+# This line is needed for matplotlib to work
+import os,sys,glob,string,pickle
+from astropy.io import fits as pyfits
 from numpy import *
+import matplotlib
+matplotlib.use('Agg')
 import matplotlib.pyplot as plt
-import config_file
+#import config_file
 from scipy import signal,interpolate,optimize
+
+
 
 
 def polyfit_sigclip(x,y,order=2,clip=2,niter=1): ### clip in sigma
@@ -22,25 +29,25 @@ def polyfit_sigclip(x,y,order=2,clip=2,niter=1): ### clip in sigma
     return fit#,stdev,mask
 
 
-def return_masks(masterflat,toplot=False):
-    config = config_file.set_config()
+def return_masks(masterflat,toplot=False, config=None):
+    #config = config_file.set_config() # Marusa
 
     masterflat.astype(float)
 
     ybin = config["binning"]
-    print "assuming a ybin of",ybin
+    print("assuming a ybin of",ybin)
 
-    print "creating a set of steps for the centres of the orders"
+    print("creating a set of steps for the centres of the orders")
 
-    steps = mean(masterflat[:,len(masterflat[0])/2-10:len(masterflat[0])/2+10],axis=1)
+    steps = mean(masterflat[:,int(len(masterflat[0])/2-10):int(len(masterflat[0])/2+10)],axis=1)
     #steps = steps[:-100/ybin]
 
     ### normalise the flats
     norm = []
-    j = 200/ybin
+    j = int(200/ybin)
     i = 0
     while i < len(steps):
-        norm.append([i+j/2,min(steps[i:i+j]),max(steps[i:i+j])-min(steps[i:i+j])])
+        norm.append([i+j/2, min(steps[i:i+j]), max(steps[i:i+j]) - min(steps[i:i+j])])
         i += j
 
     norm = array(norm)
@@ -86,12 +93,12 @@ def return_masks(masterflat,toplot=False):
     indexes = f.astype(int)
 
     if len(indexes)-1 < config["norder"]:
-        print "!!!!!!!!!!! Ah shit, did not identify enough orders, check your flats !!!!!!!!!!!!!!!!!"
+        print("!!!!!!!!!!! Ah shit, did not identify enough orders, check your flats !!!!!!!!!!!!!!!!!")
     
     # plt.scatter(indexes,zeros(len(indexes)))
     # plt.plot(steps,color="r")
     # plt.show()
-    print "finding edges for each order"
+    print("finding edges for each order")
 
     order_masks = []
     stepsize = 50
@@ -105,20 +112,22 @@ def return_masks(masterflat,toplot=False):
                 
                 ### initiate trace
                 xpos = arange(10/ybin,indexes[order])
-                edge = mean(masterflat[10/ybin:indexes[order],len(masterflat[0])/2-10/ybin:len(masterflat[0])/2+10],axis=1)
+                edge = mean(masterflat[int(10/ybin):indexes[order], int(len(masterflat[0])/2) - int(10/ybin) : int(len(masterflat[0])/2+10)],axis=1)
                 mask = edge-min(edge) > cutoff*(max(edge)-min(edge))
                 edge = min(xpos[mask])
+                #print('edge0', len(edge), len(xpos))
                 edge0 = edge
                 width = indexes[order]-edge
                 trace_top.append([len(masterflat[0])/2,edge])
 
                 ### look left
-                x = len(masterflat[0])/2-10
+                x = int(len(masterflat[0])/2-10)
                 while x > 100:
                     xpos = arange(10/ybin,edge+width)
-                    edge = mean(masterflat[10/ybin:edge+width,x-stepsize:x+stepsize],axis=1)
+                    edge = mean(masterflat[int(10/ybin):int(edge+width), int(x-stepsize):int(x+stepsize)],axis=1)
                     mask = edge-min(edge) > cutoff*(max(edge)-min(edge))
                     edge = min(xpos[mask])
+                    #print('edge1', len(edge), len(xpos))
                     trace_top.append([x,edge])
 
                     x -= stepsize
@@ -130,9 +139,10 @@ def return_masks(masterflat,toplot=False):
                 x = len(masterflat[0])/2+10
                 while x < len(masterflat[0])-100:
                     xpos = arange(10/ybin,edge+width)
-                    edge = mean(masterflat[10/ybin:edge+width,x-stepsize:x+stepsize],axis=1)
+                    edge = mean(masterflat[int(10/ybin):int(edge+width),int(x-stepsize):int(x+stepsize)],axis=1)
                     mask = edge-min(edge) > cutoff*(max(edge)-min(edge))
                     edge = min(xpos[mask])
+                    #print('edge2', len(edge), len(xpos))
                     trace_top.append([x,edge])
 
                     x += stepsize
@@ -145,7 +155,7 @@ def return_masks(masterflat,toplot=False):
                 zpt = indexes[order]-(indexes[order]-indexes[order-1])/2
                 ### initiate trace
                 xpos = arange(zpt,indexes[order])
-                edge = mean(masterflat[zpt:indexes[order],len(masterflat[0])/2-10:len(masterflat[0])/2+10],axis=1)
+                edge = mean(masterflat[int(zpt):indexes[order],int(len(masterflat[0])/2)-10:int(len(masterflat[0])/2)+10],axis=1)
                 mask = edge-min(edge) > cutoff*(max(edge)-min(edge))
                 edge = min(xpos[mask])
                 width = indexes[order]-edge
@@ -157,7 +167,7 @@ def return_masks(masterflat,toplot=False):
                 x = len(masterflat[0])/2-10
                 while x > 100:
                     xpos = arange(zpt+(edge-edge0),edge+width)
-                    edge = mean(masterflat[zpt+(edge-edge0):edge+width,x-stepsize:x+stepsize],axis=1)
+                    edge = mean(masterflat[int(zpt+(edge-edge0)):int(edge+width),int(x-stepsize):int(x+stepsize)],axis=1)
                     #plt.plot(xpos,edge)
 
                     emin,eminpos = min(edge),xpos[argmin(edge)]
@@ -182,7 +192,7 @@ def return_masks(masterflat,toplot=False):
                 x = len(masterflat[0])/2+10
                 while x < len(masterflat[0])-100:
                     xpos = arange(zpt+(edge-edge0),edge+width)
-                    edge = mean(masterflat[zpt+(edge-edge0):edge+width,x-stepsize:x+stepsize],axis=1)
+                    edge = mean(masterflat[int(zpt+(edge-edge0)):int(edge+width),int(x-stepsize):int(x+stepsize)],axis=1)
                     #plt.plot(xpos,edge)
 
                     emin,eminpos = min(edge),xpos[argmin(edge)]
@@ -214,9 +224,19 @@ def return_masks(masterflat,toplot=False):
 
             trace_bottom = []
             zpt = indexes[order]+(indexes[order+1]-indexes[order])/2
+            #~ if order == 0:
+                 #~ zpt+= 1 # Marusa: +1
             ### initiate trace
             xpos = arange(indexes[order],zpt)
-            edge = mean(masterflat[indexes[order]:zpt,len(masterflat[0])/2-10:len(masterflat[0])/2+10],axis=1)
+            if order ==0:
+                #~ edge = mean(masterflat[int(indexes[order]):int(zpt)+1,int(len(masterflat[0])/2)-10:int(len(masterflat[0])/2)+10],axis=1) # Marusa: added +1 in zpt+1
+                edge = mean(masterflat[int(indexes[order]):int(zpt),int(len(masterflat[0])/2)-10:int(len(masterflat[0])/2)+10],axis=1)
+            else:
+                edge = mean(masterflat[int(indexes[order]):int(zpt),int(len(masterflat[0])/2)-10:int(len(masterflat[0])/2)+10],axis=1)
+            print(len(xpos), len(edge), order)
+            print(indexes[order])
+            print(zpt)
+
 
             mask = edge-min(edge) > cutoff*(max(edge)-min(edge))
             edge = max(xpos[mask])
@@ -229,7 +249,7 @@ def return_masks(masterflat,toplot=False):
             x = len(masterflat[0])/2-10
             while x > 100:
                 xpos = arange(edge-width,zpt+(edge-edge0))
-                edge = mean(masterflat[edge-width:zpt+(edge-edge0),x-stepsize:x+stepsize],axis=1)
+                edge = mean(masterflat[int(edge-width):int(zpt+(edge-edge0)),int(x-stepsize):int(x+stepsize)],axis=1)
 
                 emin,eminpos = min(edge),xpos[argmin(edge)]
                 if max(xpos) > eminpos:
@@ -255,7 +275,7 @@ def return_masks(masterflat,toplot=False):
             x = len(masterflat[0])/2+10
             while x < len(masterflat[0])-100:
                 xpos = arange(edge-width,zpt+(edge-edge0))
-                edge = mean(masterflat[edge-width:zpt+(edge-edge0),x-stepsize:x+stepsize],axis=1)
+                edge = mean(masterflat[int(edge-width):int(zpt+(edge-edge0)),int(x-stepsize):int(x+stepsize)],axis=1)
                 emin,eminpos = min(edge),xpos[argmin(edge)]
                 if max(xpos) > eminpos:
                     xpos = xpos[:argmin(edge)]
@@ -296,7 +316,7 @@ def return_masks(masterflat,toplot=False):
 
             order_masks.append([mask,trace_top_fit,trace_bottom_fit])
 
-    pickle.dump(order_masks,open(config["folder"]+"/temp/order_masks.pkl","wb"))
+    pickle.dump(order_masks, open(os.path.join(config["folder"], "temp/", "order_masks.pkl"), "wb"))
         
             
     return order_masks

@@ -1,16 +1,20 @@
-import os,sys,string,pickle,pyfits
+import os,sys,string,pickle#,pyfits
+from astropy.io import fits
 import emcee
 from numpy import *
 from scipy import interpolate,optimize
+import matplotlib
+matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 import warnings
 warnings.filterwarnings("ignore")
 
-import config_file
-config = config_file.set_config()
+# Commented: Marusa
+# import config_file
+#config = config_file.set_config()
 
-library_path = config["spectral_library"]+"lib/"
-library = pickle.load(open(library_path+"library.pkl","rb"))
+# library_path = config["spectral_library"]+"lib/" # Marusa
+#~ library = pickle.load(open(library_path+"library.pkl","rb"))
 
 
 c = 3.*10**5
@@ -257,7 +261,7 @@ def plot_template(template_array,spectrum_array,lsd):
 
 def get_best_template(spectrum,lsd,teffinit,logginit):
     lsd_list,lsd_master,vsini,shift = pickle.load(open(lsd,"rb"))
-    spectrum = pyfits.open(spectrum)
+    spectrum = fits.open(spectrum)
 
     spectrum_array = [spectrum[0].data,spectrum[5].data]
 
@@ -269,61 +273,62 @@ def get_best_template(spectrum,lsd,teffinit,logginit):
     lsd_interp = vgauss(lsd_master[:,0],lsd_interp,macro=13.04/2.355,scale=1.)
     lsd_interp = transpose(array([lsd_master[:,0],lsd_interp]))
 
-    library_mask = library[0][:,0] >= teffinit - 2000
-    library_mask *= library[0][:,0] <= teffinit + 2000
-    library_mask *= library[0][:,1] >= logginit
+    #~ library_mask = library[0][:,0] >= teffinit - 2000
+    #~ library_mask *= library[0][:,0] <= teffinit + 2000
+    #~ library_mask *= library[0][:,1] >= logginit
     #library_mask = library[0][:,0] == teffinit 
 
-    bestfit = []
-    for i in range(len(library[0][library_mask])):
-        template_array = library[1][library_mask][i]
-        template_array = transpose(array([library[2],template_array]))
+    #~ bestfit = []
+    #~ for i in range(len(library[0][library_mask])):
+        #~ template_array = library[1][library_mask][i]
+        #~ template_array = transpose(array([library[2],template_array]))
             
-        lstsq = match_template(template_array,spectrum_array,lsd_interp)
-        #lstsq = match_template(template_array,spectrum_array,lsd_master)
-        #print library[0][library_mask][i],lstsq
-        bestfit.append([lstsq]+list(library[0][library_mask][i]))
+        #~ lstsq = match_template(template_array,spectrum_array,lsd_interp)
+        #~ #lstsq = match_template(template_array,spectrum_array,lsd_master)
+        #~ #print library[0][library_mask][i],lstsq
+        #~ bestfit.append([lstsq]+list(library[0][library_mask][i]))
 
 
-    bestfit = array(bestfit)
-    bestfit = bestfit[argmin(bestfit[:,0])]
-    print "best fit spectype",bestfit
-    return bestfit[1],bestfit[2],bestfit[3],x0[0],x0[2]
+    #~ bestfit = array(bestfit)
+    #~ bestfit = bestfit[argmin(bestfit[:,0])]
+    #~ print "best fit spectype",bestfit
+    #~ return bestfit[1],bestfit[2],bestfit[3],x0[0],x0[2]
+    return 0,0,0,x0[0],x0[2] # MARUSA
 
     
 if __name__ == "__main__":
+    change='marusa'
+    #~ spectrum = "/media/Onion/Data/ANU23echelle/20180703//reduced/RAWSPEC_KS17C04467_2018-07-03T18-19-19.184.fits"
+    #~ lsd = os.path.dirname(spectrum)+"/lsd_"+os.path.basename(spectrum)+".pkl"
 
-    spectrum = "/media/Onion/Data/ANU23echelle/20180703//reduced/RAWSPEC_KS17C04467_2018-07-03T18-19-19.184.fits"
-    lsd = os.path.dirname(spectrum)+"/lsd_"+os.path.basename(spectrum)+".pkl"
-
-    teff,logg,feh,vsini,vshift =  get_best_template(spectrum,lsd,7000,3.5)
-    print teff,logg,feh,vsini,vshift
+    #~ teff,logg,feh,vsini,vshift =  get_best_template(spectrum,lsd,7000,3.5)
+    #~ print teff,logg,feh,vsini,vshift
     
-    lsd_list,lsd_master,vsini,shift = pickle.load(open(lsd,"rb"))
-    spectrum = pyfits.open(spectrum)
+    #~ lsd_list,lsd_master,vsini,shift = pickle.load(open(lsd,"rb"))
+    #~ spectrum = fits.open(spectrum)
 
-    spectrum_array = [spectrum[0].data,spectrum[5].data]
+    #~ spectrum_array = [spectrum[0].data,spectrum[5].data]
 
-    #print "vsini,shift", vsini,shift
+    #~ #print "vsini,shift", vsini,shift
 
-    x0 = fitlsd_mcmc(lsd_master,vsini_init=vsini)
-    print "lsdprof fit",x0
-    lsd_interp = make_rot_prof(lsd_master[:,0],vsini=x0[0],scale=x0[1],vshift=x0[2])
-    lsd_interp = vgauss(lsd_master[:,0],lsd_interp,macro=13.04/2.355,scale=1.)
-    lsd_interp = transpose(array([lsd_master[:,0],lsd_interp]))
+    #~ x0 = fitlsd_mcmc(lsd_master,vsini_init=vsini)
+    #~ print "lsdprof fit",x0
+    #~ lsd_interp = make_rot_prof(lsd_master[:,0],vsini=x0[0],scale=x0[1],vshift=x0[2])
+    #~ lsd_interp = vgauss(lsd_master[:,0],lsd_interp,macro=13.04/2.355,scale=1.)
+    #~ lsd_interp = transpose(array([lsd_master[:,0],lsd_interp]))
 
 
-    #teff,logg,feh = 5750,4.5,0.0
-    #vsini,shift = 6.740170462845786,34.74406961975362
-
-    
-    library_mask = library[0][:,0] == teff
-    library_mask *= library[0][:,1]  == logg
-    library_mask *= library[0][:,2]  == feh
+    #~ #teff,logg,feh = 5750,4.5,0.0
+    #~ #vsini,shift = 6.740170462845786,34.74406961975362
 
     
-    template_array = library[1][library_mask][0]
-    template_array = transpose(array([library[2],template_array]))
+    #~ library_mask = library[0][:,0] == teff
+    #~ library_mask *= library[0][:,1]  == logg
+    #~ library_mask *= library[0][:,2]  == feh
+
+    
+    #~ template_array = library[1][library_mask][0]
+    #~ template_array = transpose(array([library[2],template_array]))
             
 
-    plot_template(template_array,spectrum_array,lsd_interp)
+    #~ plot_template(template_array,spectrum_array,lsd_interp)

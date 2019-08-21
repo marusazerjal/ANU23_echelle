@@ -1,5 +1,7 @@
 import os,sys,string,glob
 from numpy import *
+import matplotlib
+matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 import pandas
 from astropy.time import Time

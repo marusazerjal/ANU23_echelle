@@ -2,7 +2,8 @@ import os,sys,string,pickle
 from numpy import *
 import matplotlib.pyplot as plt
 import matplotlib.gridspec as gridspec
-import pyfits
+#~ import pyfits
+from astropy.io import fits
 from scipy import interpolate,optimize
 import lsd,cc_rv,spectype
 c = 3.*10**5
@@ -275,7 +276,7 @@ def plot_O2gamma(spectrum_array,ax):
     
 def main(spectrum_file,template_file,teff,logg,feh,vsini,shift):
     ### format the spectrum file
-    spectrum_hdulist = pyfits.open(spectrum_file)
+    spectrum_hdulist = fits.open(spectrum_file)
     ra,dec,objectname = spectrum_hdulist[0].header["RA"], spectrum_hdulist[0].header["DEC"], spectrum_hdulist[0].header["OBJECT"]
     template_array = loadtxt(template_file)
     

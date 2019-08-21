@@ -1,5 +1,8 @@
-import os,sys,string,pyfits,pickle,glob
+import os,sys,string,pickle,glob
+from astropy.io import fits as pyfits
 from numpy import *
+import matplotlib
+matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 import astropy.time
 from PyAstronomy import pyasl
@@ -98,7 +101,7 @@ def combine_header(header_list):
     corr, hjd = pyasl.helcorr(longitude, latitude, altitude, \
                               ra2000, dec2000, jd, debug=False)
     
-    print jd,corr,hjd
+    print(jd,corr,hjd)
     
     new_header.set('HJD',hjd)
     new_header.set('JD',jd)
@@ -125,7 +128,7 @@ def average_adjacent_obs(obslist,tharlist,folder):
 
             ### return spectra taken between these two thars
             
-            if obslist[1][j] > tharlist[1][i] and obslist[1][j] < tharlist[1][i+1] and os.path.exists(folder+"/temp/"+fitsname+".spec.pkl"):
+            if obslist[1][j] > tharlist[1][i] and obslist[1][j] < tharlist[1][i+1] and os.path.exists(os.path.join(folder, "temp/", fitsname+".spec.pkl")):
                 objname.append(pyfits.getheader(obslist[0][j])["OBJECT"])
                 obsindx.append(j)
 
@@ -135,7 +138,6 @@ def average_adjacent_obs(obslist,tharlist,folder):
             objectlist = unique(objname)
 
             for obj in objectlist:
-                
                 spectrum_list = []
                 background_list = []
                 thar_list = []
@@ -146,7 +148,7 @@ def average_adjacent_obs(obslist,tharlist,folder):
                 for i in range(len(objname)): ### read in all the spectra of that object
                     if objname[i] == obj:
                         fitsname = os.path.basename(obslist[0][obsindx[i]])
-                        spec = pickle.load(open(folder+"/temp/"+fitsname+".spec.pkl","rb"))
+                        spec = pickle.load(open(os.path.join(folder, "temp/", fitsname+".spec.pkl"),"rb"))
                         header_list.append(pyfits.getheader(obslist[0][obsindx[i]]))
 
 
@@ -212,8 +214,10 @@ def average_adjacent_obs(obslist,tharlist,folder):
                 hdubk_nf = pyfits.ImageHDU(array(background_noflat_master))
                 hdulist = pyfits.HDUList([hduspec,hdubk,hduthar,hduspec_nf,hdubk_nf])
 
-                output_name = folder+"/temp/"+"ANU23e_"+obj+"_"+fitsTIME+".fits"
-                os.system("rm "+output_name)
+                output_name = os.path.join(folder, "temp/", "ANU23e_"+obj+"_"+fitsTIME+".fits")
+                print('create fits output_name', output_name)
+                #~ output_name = reduce(os.path.join(folder, "temp", "ANU23e_", obj, "_", fitsTIME, ".fits")) # MARUSA
+                os.system("rm "+output_name) # WHY WOULD YOU DELETE THIS? # MARUSA
                 hdulist.writeto(output_name)
 
                 

@@ -1,7 +1,9 @@
 import os,sys,string
 from numpy import *
+import matplotlib
+matplotlib.use('Agg')
 import matplotlib.pyplot as plt
-import pyfits
+from astropy.io import fits as pyfits
 from scipy import interpolate,optimize,signal,stats
 
 
@@ -60,7 +62,7 @@ def fitgaussian(xpos,order,method="highest_peak",toplot=False):
             xpos = xpos[mask]
             order = order[mask]            
         except ValueError:
-            print "didn't find peaks"
+            print("didn't find peaks")
             peak_pos = nan #median(xpos)
         x0 = [max(order),peak_pos,1.,min(order)]
 
@@ -82,7 +84,7 @@ def fitgaussian(xpos,order,method="highest_peak",toplot=False):
                 peak_pos = nan
 
         except ValueError:
-            print "didn't find peaks"
+            print("didn't find peaks")
             peak_pos = nan #median(xpos)
         x0 = [max(order),peak_pos,1.,min(order)]
         
@@ -247,7 +249,7 @@ def doorder(order,x0_init,toplot=True):
     try:
         peaklist = peaklist[mask]
     except IndexError:
-        print "no peaks found"
+        print("no peaks found")
         stdev = 99
 
         
@@ -298,7 +300,7 @@ def run_spectrum(arc,initial_solutions):
     norders = min([len(arc),len(initial_solutions)])
     for i in range(0,norders):
         peaklist,stdev = doorder(arc[i],[initial_solutions[i,2],initial_solutions[i,1]],toplot=False)
-        print "order",i,stdev,len(peaklist)
+        print("order",i,stdev,len(peaklist))
         if stdev < 0.13:
             peaklist = list(transpose(array([i*ones(len(peaklist)),peaklist[:,1],peaklist[:,0]])))
             all_peaks += peaklist

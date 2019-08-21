@@ -1,10 +1,12 @@
 from numpy import *
+import matplotlib
+matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 import matplotlib.gridspec as gridspec
 from scipy import optimize
 import os,sys,string
 import emcee
-import pyfits
+from astropy.io import fits as pyfits
 
 def chebyshev(x0,peaklist,shape):
     x0 = reshape(x0,shape)
@@ -74,7 +76,7 @@ def fit_chebyshev_lstsq(x0_init,peaklist,shape):
         wave = chebyshev(x0,peaklist.copy(),shape)
         lstsq = (wave-peaklist[:,2])**2
         mask = lstsq < lstsq_percentile ### remove outliers
-        print len(lstsq[mask])
+        print(len(lstsq[mask]))
         i += 1
 
     
