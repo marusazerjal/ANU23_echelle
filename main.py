@@ -139,7 +139,7 @@ def main():
     tharlist = return_tharlist(config["folder"])
     obslist = return_obslist(config["folder"])
     
-    """
+    #"""
     for i in range(len(obslist[0])):
         fitsname = os.path.basename(obslist[0][i])
         #print('&&&&&&& fitsname', fitsname, os.path.exists(os.path.join(config["folder"], "temp/", fitsname+".spec.pkl")))
@@ -193,7 +193,7 @@ def main():
             pickle.dump([spectrum,background,tharspec,spectrum_noflat,background_noflat], open(os.path.join(config["folder"], "temp/", fitsname+".spec.pkl"), "wb"))
             
             #sys.exit()
-    """
+    #"""
     print("Creating fits files")
     average_adjacent_obs.average_adjacent_obs(obslist,tharlist,config["folder"])
     
