@@ -136,7 +136,7 @@ def average_adjacent_obs(obslist,tharlist,folder):
         if len(obsindx) > 0:
 
             objectlist = unique(objname)
-
+            print('objectlist', objectlist)
             for obj in objectlist:
                 spectrum_list = []
                 background_list = []
@@ -146,6 +146,7 @@ def average_adjacent_obs(obslist,tharlist,folder):
                 header_list = []
                 
                 for i in range(len(objname)): ### read in all the spectra of that object
+                    print('OBJNAME', objname[i], obj)
                     if objname[i] == obj:
                         fitsname = os.path.basename(obslist[0][obsindx[i]])
                         spec = pickle.load(open(os.path.join(folder, "temp/", fitsname+".spec.pkl"),"rb"))
