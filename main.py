@@ -1,3 +1,5 @@
+#!/usr/bin/python
+
 """
 marusa@mash:~>source venv_echelle/bin/activate
 """
