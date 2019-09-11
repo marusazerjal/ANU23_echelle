@@ -2,6 +2,12 @@
 marusa@mash:~>source venv_echelle/bin/activate
 """
 
+
+activate_this = '/data/mash/marusa/reductions_echelle/venv_echelle/bin/activate'
+execfile(activate_this, dict(__file__=activate_this))
+
+print('venv_echelle activated.')
+
 import os,sys,string,glob,pickle
 from astropy.io import fits as pyfits
 from numpy import *
