@@ -49,7 +49,7 @@ def normalise(spec,niter=2,sigma_low = 0.05,deg=5):
 
     ### normalise the spectrum to 1
     
-    
+    print spec
     x = arange(len(spec))
     mask = spec == spec
     spec_iter = spec[mask]
