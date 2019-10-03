@@ -27,7 +27,7 @@ def create_filelist(folder, config=None):
         if pyfits.getheader(fits)["OBJECT"] == config["init_wave_obj"]:
             init_wave_fits = fits
 
-    #print('HHHHHH', raw_fitslist,init_wave_fits)
+    print('HHHHHH', raw_fitslist,init_wave_fits)
 
     try:
         return raw_fitslist,init_wave_fits
