@@ -198,11 +198,14 @@ def main():
             #~ for i in range(len(tharspec)):
                 #~ tharspec[i] += bk[i]
 
-            #~ pickle.dump([spectrum,background,tharspec,spectrum_noflat,background_noflat], open(os.path.join(config["folder"], "temp/", fitsname+".spec.pkl"), "wb"))
+            #~ pickle_filename = os.path.join(config["folder"], "temp/", fitsname+".spec.pkl")
+            #~ print 'DUMP pickle', pickle_filename
+            #~ pickle.dump([spectrum,background,tharspec,spectrum_noflat,background_noflat], open(pickle_filename, "wb"))
             
             #~ #sys.exit()
     #~ #"""
     print("Creating fits files")
+    print('obslist, tharlist', obslist,tharlist)
     average_adjacent_obs.average_adjacent_obs(obslist,tharlist,config["folder"])
     
     print('\n\ndo wavecal_all')
