@@ -21,7 +21,7 @@ rv_standards = pandas.read_csv("RV_standard.dat",delim_whitespace=True)
 def create_filelist(folder, config=None):
     #print('path', os.path.join(folder, "temp/ANU23e*.fits"))
     raw_fitslist = sort(glob.glob(os.path.join(folder, "temp/ANU23e*.fits")))
-    #print('raw_fitslist', raw_fitslist)
+    print('raw_fitslist', raw_fitslist)
     for fits in raw_fitslist:
         print('THE FILE', pyfits.getheader(fits)["OBJECT"], 'INIT_WAVE_OBJ', config["init_wave_obj"])
         if pyfits.getheader(fits)["OBJECT"] == config["init_wave_obj"]:
