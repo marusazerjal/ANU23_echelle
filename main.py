@@ -216,7 +216,8 @@ def main():
         print("Running spectral analysis")
         
         import run_analysis
-        run_analysis.main(config["folder"])
+        # Photometry to estimate temperature to find the template. Photometry should be a dictionary with objectnames and BP-RP
+        run_analysis.main(config["folder"], photometry)
     
 if __name__ == "__main__":
 

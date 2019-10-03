@@ -108,8 +108,12 @@ def roundnearest(val,r):
 #     return teff,rstar,gmag
 
 
-
-
+def estimate_teff_from_bp_rp(bp_rp):
+    # Estimate temperature from the colour
+    z = [33.14962128, -476.14587496, 2546.45692104, -6360.12338185, 9466.73218724]
+    p = np.poly1d(z)
+    teff = p(bp_rp)
+    return teff
 
 def getteff(c,cone=10):
 
@@ -172,7 +176,10 @@ def measure_snr(fitsname):
    return nanmax(array(snrlist))
 
  
-def main(folder):
+def main(folder, photometry):
+    """
+    Photometry should be a dictionary with objectnames and BP-RP
+    """
     fitslist = sort(glob.glob(folder+"/reduced/*.fits"))
     for fits in fitslist:
     #for fits in [fitslist[1]]:
@@ -189,12 +196,21 @@ def main(folder):
 
            c = SkyCoord(ra+" "+dec, frame='icrs', unit=(u.hourangle, u.deg))
 
+           # Find BP-RP
            try:
-               teff,rstar,gmag = getteff(c)
-               print "Gaia teff,rstar,gmag",teff,rstar,gmag
-               teff = int(roundnearest(teff,250))
-               rstar = int(roundnearest(rstar,0.5))
-               gmag = float(gmag)
+               bp_rp = photometry[objectname]
+           except:
+               bp_rp = None
+               # Now what?
+
+           try:
+               #~ teff,rstar,gmag = getteff(c)
+               teff, _, _ = estimate_teff_from_bp_rp(bp_rp)
+               #~ print "Gaia teff,rstar,gmag",teff,rstar,gmag
+               print "Estimated photometric teff",teff#,rstar,gmag
+               #~ teff = int(roundnearest(teff,250))
+               #~ rstar = int(roundnearest(rstar,0.5))
+               #~ gmag = float(gmag)
 
            except (ValueError,IndexError):
                print "Error on teff"
@@ -203,13 +219,21 @@ def main(folder):
                gmag = -99.
 
 
-           if teff < 4000:
-               teff = 4000
-           if teff > 10000:
-               teff = 10000
+           #~ if teff < 4000:
+               #~ teff = 4000
+           #~ if teff > 10000:
+               #~ teff = 10000
 
+            
+           # Create a template with this temperature
+           template = '../template.dat'
+           w, flux = prepare_sinthetic_templates.get_spectrum(teff)
+           fle = open(template, 'wb')
+           for ww, ff in zip(w, flux):
+               fle.write('%f %f\n'%(ww, ff))
+           fle.close()
 
-           template = speclib+"template_"+str(teff)+"_4.0_0.0.dat"
+           #~ template = speclib+"template_"+str(teff)+"_4.0_0.0.dat"
 
            snr = measure_snr(fits)
            ccf,vsini,lsdshift = lsd.run_spectrum(fits,template)
