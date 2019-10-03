@@ -23,7 +23,7 @@ def create_filelist(folder, config=None):
     raw_fitslist = sort(glob.glob(os.path.join(folder, "temp/ANU23e*.fits")))
     #print('raw_fitslist', raw_fitslist)
     for fits in raw_fitslist:
-        print('THE FILE', pyfits.getheader(fits)["OBJECT"], config["init_wave_obj"])
+        print('THE FILE', pyfits.getheader(fits)["OBJECT"], 'INIT_WAVE_OBJ', config["init_wave_obj"])
         if pyfits.getheader(fits)["OBJECT"] == config["init_wave_obj"]:
             init_wave_fits = fits
 
