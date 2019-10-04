@@ -7,6 +7,7 @@ def set_config():
         "binning" : 2,                 ### Y binning 
         "bias" : "bias",              ### bias header
         "flat" : "Flat",              ### flat header
+        "dark": 'dark',               ### dark header. Darks are not used in this reduction.
         "arc" : "ThAr",               ### ThAr header
         "norder" : 24,                ### Number of orders to extract ### Default is 24
         "jdheader" : "MJD-OBS",       ### original JD header that's written directly into each obs without modification -- not the BJD!!!

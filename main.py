@@ -40,6 +40,7 @@ def return_obslist(folder):
     nonobjectlist = [
         config["bias"],
         config["flat"],
+        config["dark"],
         config["arc"],
         "test",
         "sky",
