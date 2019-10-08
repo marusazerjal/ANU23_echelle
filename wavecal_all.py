@@ -96,7 +96,8 @@ def main(folder, config=None):
 
         wave_hdu = fitarc_chebyshev.apply_solution(x0,fits[0].data,(ndeg_wave,ndeg_order))
 
-        output_name = folder+"/reduced/"+os.path.basename(fitsname)
+        #~ output_name = folder+"/reduced/"+os.path.basename(fitsname)
+        output_name = os.path.join(folder, 'reduced', os.path.basename(fitsname))
         os.system("rm "+output_name)
         fits.append(wave_hdu)
         fits.writeto(output_name)
