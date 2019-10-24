@@ -141,6 +141,7 @@ def main():
         order_masks = pickle.load(open(os.path.join(config["folder"], "temp/order_masks.pkl"), "rb"))
     else:
         print('MASTERFLAT', masterflat)
+        plt.imshow(masterflat, aspect="auto")
         order_masks = mask_orders.return_masks(masterflat, config=config)
 
     masterflat_extracted = extract_order.mask_order(masterflat,order_masks, binning=binning)
