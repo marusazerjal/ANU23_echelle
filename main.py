@@ -142,8 +142,8 @@ def main():
     else:
         print('MASTERFLAT', masterflat)
         plt.imshow(masterflat, aspect="auto")
-        plt.show()
         order_masks = mask_orders.return_masks(masterflat, config=config)
+    plt.show()
 
     masterflat_extracted = extract_order.mask_order(masterflat,order_masks, binning=binning)
 
