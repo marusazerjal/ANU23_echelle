@@ -136,7 +136,7 @@ def main():
         masterflat = pyfits.getdata(os.path.join(config["folder"], "temp/masterflat.fits"))[:,ccdsec_min:ccdsec_max]
         masterflat -= masterbias
 
-    np.savetxt('masterflat.dat', masterflat)
+    savetxt('masterflat.dat', masterflat)
 
     print("determine order masks")
     if os.path.exists(os.path.join(config["folder"], "temp/order_masks.pkl")):
