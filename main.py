@@ -101,7 +101,7 @@ def main():
     
     try:
         do_main_loop = sys.argv[1]
-    else:
+    except:
         do_main_loop=True
     
     print("making folders")
