@@ -184,6 +184,9 @@ def main():
                 fits = fits.astype(float64) # Marusa
                 #print fits
                 #print(type(fits[0][0]), type(masterbias[0][0]))
+
+                print('FITS BEFORE MASTERBIAS')
+                print(fits)
                 fits -= masterbias
                 fits = extract_order.mask_order(fits,order_masks, binning=binning)
                 
