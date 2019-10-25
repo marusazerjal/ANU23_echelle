@@ -31,9 +31,10 @@ def polyfit_sigclip(x,y,order=2,clip=2,niter=1): ### clip in sigma
 
 def return_masks(masterflat,toplot=False, config=None):
     """
-    MZ (guessing): Find orders. Return masks that include orders.
+    MZ (guessing): Find orders from the masterflat. Return masks that include orders.
     """
     #config = config_file.set_config() # Marusa
+    print('config', config)
 
     masterflat.astype(float)
 
