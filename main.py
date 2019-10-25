@@ -169,6 +169,7 @@ def main():
     if do_main_loop:
         for i in range(len(obslist[0])):
             fitsname = os.path.basename(obslist[0][i])
+            print(fitsname)
             #print('&&&&&&& fitsname', fitsname, os.path.exists(os.path.join(config["folder"], "temp/", fitsname+".spec.pkl")))
             if not os.path.exists(os.path.join(config["folder"], "temp/", fitsname+".spec.pkl")): ### check whether obs was reduced
                 print("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@")
