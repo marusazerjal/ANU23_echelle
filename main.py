@@ -205,6 +205,8 @@ def main():
                 #pickle.dump(thar_shear,open(config["folder"]+"/temp/"+fitsname+".thar.pkl","wb"))
                 #pickle.dump(fits_shear,open(config["folder"]+"/temp/"+fitsname+".shear.pkl","wb"))
 
+                print('DIAGNOSTICS')
+                print(fits_noflat_shear)
                 trace_array = extract_order.find_trace(fits_noflat_shear, binning=binning)
                 plt.savefig(os.path.join(config["folder"], "temp/", fitsname+"trace.pdf"))
                 plt.clf()

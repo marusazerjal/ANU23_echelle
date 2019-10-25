@@ -129,11 +129,11 @@ def find_trace(fits_extracted, binning=None):
         fits_extracted_order[mask] = nan
 
         ### fit the middle to get a width
-        print('DIAGNOSTICS', order)
-        print(fits_extracted)
-        print(fits_extracted_order)
+        #~ print('DIAGNOSTICS', order)
+        #~ print(fits_extracted)
+        #~ print(fits_extracted_order)
         center = mean(fits_extracted_order[:,len(fits_extracted_order)/2-10:len(fits_extracted_order)/2+10],axis=1)
-        print(center)
+        #~ print(center)
         width = fitgaussian(y,center)[2]
         if abs(width) > 5.0/binning:
             width = 5.0/binning
