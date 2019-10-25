@@ -186,6 +186,10 @@ def main():
                 #print(type(fits[0][0]), type(masterbias[0][0]))
                 fits -= masterbias
                 fits = extract_order.mask_order(fits,order_masks, binning=binning)
+                
+                
+                print('DIAGNOSTICS')
+                print(fits)
 
                 import copy
                 fits_noflat = copy.deepcopy(fits)
@@ -205,8 +209,6 @@ def main():
                 #pickle.dump(thar_shear,open(config["folder"]+"/temp/"+fitsname+".thar.pkl","wb"))
                 #pickle.dump(fits_shear,open(config["folder"]+"/temp/"+fitsname+".shear.pkl","wb"))
 
-                print('DIAGNOSTICS')
-                print(fits_noflat_shear)
                 trace_array = extract_order.find_trace(fits_noflat_shear, binning=binning)
                 plt.savefig(os.path.join(config["folder"], "temp/", fitsname+"trace.pdf"))
                 plt.clf()
