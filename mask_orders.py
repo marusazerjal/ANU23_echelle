@@ -298,7 +298,7 @@ def return_masks(masterflat,toplot=False, config=None):
                 #plt.plot(xpos,edge)
                 
                 mask = edge-min(edge) > cutoff*(max(edge)-min(edge))
-                print('MZ: mask edge, ', cutoff, edge, min(edge), max(edge))
+                #~ print('MZ: mask edge, ', cutoff, edge, min(edge), max(edge))
                 edge = max(xpos[mask])
 
                 #plt.axvline(x=edge)
