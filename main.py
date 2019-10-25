@@ -100,7 +100,7 @@ def loadthar(jd,tharlist,masterbias):
 def main():
     
     try:
-        do_main_loop = sys.argv[1]
+        do_main_loop = sys.argv[2]
         if do_main_loop=='True':
             do_main_loop=True
         elif do_main_loop=='False':
