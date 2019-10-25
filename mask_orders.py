@@ -34,7 +34,17 @@ def return_masks(masterflat,toplot=False, config=None):
     MZ (guessing): Find orders from the masterflat. Return masks that include orders.
     """
     #config = config_file.set_config() # Marusa
-    print('config', config)
+    #~ print('config', config)
+    
+    # MZ: a hack assuming that all flats are the same and stable
+    filename = os.path.join(config['folder'], 'temp', 'order_masks.pkl')
+    if os.path.isfile(filename):
+        f=open(filename, 'rb')
+        order_masks = pickle.load(f)
+        f.close()
+        return order_masks
+    else:
+        pass
 
     masterflat.astype(float)
 
