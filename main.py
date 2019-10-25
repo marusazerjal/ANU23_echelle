@@ -108,6 +108,8 @@ def main():
     except:
         do_main_loop=True
     
+    print(do_main_loop)
+    
     print("making folders")
     print(config)
     try:
