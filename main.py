@@ -126,6 +126,7 @@ def main():
     else:
         masterbias = pyfits.getdata(os.path.join(config["folder"], "temp/masterbias.fits"))[:,ccdsec_min:ccdsec_max]
 
+    # MASTERFLAT
     if not os.path.exists(os.path.join(config["folder"], "temp/masterflat.fits")):
         print("create master flat")
         print(ccdsec_min, ccdsec_max, type(ccdsec_min), type(ccdsec_max))
