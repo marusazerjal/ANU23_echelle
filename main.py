@@ -99,6 +99,11 @@ def loadthar(jd,tharlist,masterbias):
         
 def main():
     
+    try:
+        do_main_loop = sys.argv[1]
+    else:
+        do_main_loop=True
+    
     print("making folders")
     print(config)
     try:
@@ -155,62 +160,63 @@ def main():
     obslist = return_obslist(config["folder"])
     
     #~ #"""
-    for i in range(len(obslist[0])):
-        fitsname = os.path.basename(obslist[0][i])
-        #print('&&&&&&& fitsname', fitsname, os.path.exists(os.path.join(config["folder"], "temp/", fitsname+".spec.pkl")))
-        if not os.path.exists(os.path.join(config["folder"], "temp/", fitsname+".spec.pkl")): ### check whether obs was reduced
-            print("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@")
-            print("Reducing",obslist[0][i])
-            thar = loadthar(obslist[1][i],tharlist,masterbias)
+    if do_main_loop:
+        for i in range(len(obslist[0])):
+            fitsname = os.path.basename(obslist[0][i])
+            #print('&&&&&&& fitsname', fitsname, os.path.exists(os.path.join(config["folder"], "temp/", fitsname+".spec.pkl")))
+            if not os.path.exists(os.path.join(config["folder"], "temp/", fitsname+".spec.pkl")): ### check whether obs was reduced
+                print("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@")
+                print("Reducing",obslist[0][i])
+                thar = loadthar(obslist[1][i],tharlist,masterbias)
 
-            #print("Calculating shear"
-            #shear_list = thar_straighten.find_straighten_function(thar,order_masks)
-            #print("Applying shear"
-            #thar_shear = thar_straighten.shear_obs(extract_order.mask_order(thar,order_masks),shear_list)
-            thar_shear = extract_order.mask_order(thar,order_masks, binning=binning)
-            fits = pyfits.getdata(obslist[0][i])[:,ccdsec_min:ccdsec_max]
-            fits = fits.astype(float64) # Marusa
-            #print fits
-            #print(type(fits[0][0]), type(masterbias[0][0]))
-            fits -= masterbias
-            fits = extract_order.mask_order(fits,order_masks, binning=binning)
+                #print("Calculating shear"
+                #shear_list = thar_straighten.find_straighten_function(thar,order_masks)
+                #print("Applying shear"
+                #thar_shear = thar_straighten.shear_obs(extract_order.mask_order(thar,order_masks),shear_list)
+                thar_shear = extract_order.mask_order(thar,order_masks, binning=binning)
+                fits = pyfits.getdata(obslist[0][i])[:,ccdsec_min:ccdsec_max]
+                fits = fits.astype(float64) # Marusa
+                #print fits
+                #print(type(fits[0][0]), type(masterbias[0][0]))
+                fits -= masterbias
+                fits = extract_order.mask_order(fits,order_masks, binning=binning)
 
-            import copy
-            fits_noflat = copy.deepcopy(fits)
-            print("Dividing by flat")
-            for order in range(len(fits)):
-                flat_order = masterflat_extracted[order][0]
-                flat_order /= nanmax(flat_order.flatten())
+                import copy
+                fits_noflat = copy.deepcopy(fits)
+                print("Dividing by flat")
+                for order in range(len(fits)):
+                    flat_order = masterflat_extracted[order][0]
+                    flat_order /= nanmax(flat_order.flatten())
 
-                fits[order][0] /= flat_order
+                    fits[order][0] /= flat_order
+                    
+                    
+                #fits_shear = thar_straighten.shear_obs(fits,shear_list)
+                #fits_noflat_shear = thar_straighten.shear_obs(fits_noflat,shear_list)
+                fits_shear = fits
+                fits_noflat_shear = fits_noflat
+
+                #pickle.dump(thar_shear,open(config["folder"]+"/temp/"+fitsname+".thar.pkl","wb"))
+                #pickle.dump(fits_shear,open(config["folder"]+"/temp/"+fitsname+".shear.pkl","wb"))
+
+                trace_array = extract_order.find_trace(fits_noflat_shear, binning=binning)
+                plt.savefig(os.path.join(config["folder"], "temp/", fitsname+"trace.pdf"))
+                plt.clf()
+                pickle.dump(trace_array,open(os.path.join(config["folder"], "temp/", fitsname+".trace.pkl"),"wb"))
+
+                print("extracting spectra")
+                spectrum,background = extract_order.extract_trace(fits_shear,trace_array)
+                spectrum_noflat,background_noflat = extract_order.extract_trace(fits_noflat_shear,trace_array)
+                tharspec,bk = extract_order.extract_trace(thar_shear,trace_array)
+                for i in range(len(tharspec)):
+                    tharspec[i] += bk[i]
+
+                pickle_filename = os.path.join(config["folder"], "temp/", fitsname+".spec.pkl")
+                print 'DUMP pickle', pickle_filename
+                pickle.dump([spectrum,background,tharspec,spectrum_noflat,background_noflat], open(pickle_filename, "wb"))
                 
-                
-            #fits_shear = thar_straighten.shear_obs(fits,shear_list)
-            #fits_noflat_shear = thar_straighten.shear_obs(fits_noflat,shear_list)
-            fits_shear = fits
-            fits_noflat_shear = fits_noflat
-
-            #pickle.dump(thar_shear,open(config["folder"]+"/temp/"+fitsname+".thar.pkl","wb"))
-            #pickle.dump(fits_shear,open(config["folder"]+"/temp/"+fitsname+".shear.pkl","wb"))
-
-            trace_array = extract_order.find_trace(fits_noflat_shear, binning=binning)
-            plt.savefig(os.path.join(config["folder"], "temp/", fitsname+"trace.pdf"))
-            plt.clf()
-            pickle.dump(trace_array,open(os.path.join(config["folder"], "temp/", fitsname+".trace.pkl"),"wb"))
-
-            print("extracting spectra")
-            spectrum,background = extract_order.extract_trace(fits_shear,trace_array)
-            spectrum_noflat,background_noflat = extract_order.extract_trace(fits_noflat_shear,trace_array)
-            tharspec,bk = extract_order.extract_trace(thar_shear,trace_array)
-            for i in range(len(tharspec)):
-                tharspec[i] += bk[i]
-
-            pickle_filename = os.path.join(config["folder"], "temp/", fitsname+".spec.pkl")
-            print 'DUMP pickle', pickle_filename
-            pickle.dump([spectrum,background,tharspec,spectrum_noflat,background_noflat], open(pickle_filename, "wb"))
-            
-            #sys.exit()
-    #"""
+                #sys.exit()
+        #"""
     print("Creating fits files")
     print('obslist, tharlist', obslist,tharlist)
     average_adjacent_obs.average_adjacent_obs(obslist,tharlist,config["folder"])
