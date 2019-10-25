@@ -188,6 +188,8 @@ def main():
                 print('FITS BEFORE MASTERBIAS')
                 print(fits)
                 fits -= masterbias
+                print('FITS AFTER MASTERBIAS')
+                print(fits)
                 fits = extract_order.mask_order(fits,order_masks, binning=binning)
                 
                 
