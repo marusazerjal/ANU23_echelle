@@ -117,7 +117,7 @@ def cross_correlation_to_find_sol(spec,testwave_centre=6500,testwave_width=300,t
 
     print 'min spec', nanmin(spec[spec!=-inf])
 
-    spec -= min(spec)
+    spec -= nanmin(spec[spec!=-inf])
     print 'spec2', spec
     spec = normalise(spec[mask],deg=10)
     xpos = xpos[mask]
