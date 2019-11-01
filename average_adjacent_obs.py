@@ -78,7 +78,7 @@ def return_header_numbers(header_list,header_name):
 def combine_header(header_list):
     new_header = header_list[0]
 
-    print('HEADER_LIST', header_list)
+    #~ print('HEADER_LIST', header_list)
     new_header["MJD-OBS"] = mean(return_header_numbers(header_list,"MJD-OBS"))
     new_header["AIRMASS"] = mean(return_header_numbers(header_list,"AIRMASS"))
     new_header["EXPTIME"] = sum(return_header_numbers(header_list,"EXPTIME"))
