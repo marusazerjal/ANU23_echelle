@@ -152,11 +152,12 @@ def main():
 
     print("determine order masks")
     if os.path.exists(os.path.join(config["folder"], "temp/order_masks_LETS_DISABLE_THIS.pkl")):
-        order_masks = pickle.load(open(os.path.join(config["folder"], "temp/order_masks.pkl"), "rb"))
+        order_masks = pickle.load(open(os.path.join(config["folder"], "temp/order_masks_LALALA.pkl"), "rb"))
     else:
         print('MASTERFLAT', masterflat)
         plt.imshow(masterflat, aspect="auto")
         order_masks = mask_orders.return_masks(masterflat, config=config)
+        print 'ORDER MASKS DETERMINED', order_masks
     plt.show()
 
     masterflat_extracted = extract_order.mask_order(masterflat,order_masks, binning=binning)
