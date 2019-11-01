@@ -108,13 +108,15 @@ def cross_correlation_to_find_sol(spec,testwave_centre=6500,testwave_width=300,t
 
     ### Cross correlate order to solar spectrum
 
+    print 'spec1', spec
+   
     
     xpos = arange(len(spec))-len(spec)/2
     mask = xpos > min(xpos)+150
     mask *= xpos < max(xpos)-150
 
     spec -= min(spec)
-    print 'spec', spec
+    print 'spec2', spec
     spec = normalise(spec[mask],deg=10)
     xpos = xpos[mask]
 
