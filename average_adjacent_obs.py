@@ -216,7 +216,7 @@ def average_adjacent_obs(obslist,tharlist,folder):
                 hdubk_nf = pyfits.ImageHDU(array(background_noflat_master))
                 hdulist = pyfits.HDUList([hduspec,hdubk,hduthar,hduspec_nf,hdubk_nf])
 
-                output_name = os.path.join(folder, "temp/", "ANU23e_"+obj+"_"+fitsTIME+".fits")
+                output_name = os.path.join(folder, "temp/", "ANU23e_"+obj.replace(' ', '')+"_"+fitsTIME+".fits")
                 print('create fits output_name', output_name)
                 #~ output_name = reduce(os.path.join(folder, "temp", "ANU23e_", obj, "_", fitsTIME, ".fits")) # MARUSA
                 os.system("rm "+output_name) # WHY WOULD YOU DELETE THIS? # MARUSA
