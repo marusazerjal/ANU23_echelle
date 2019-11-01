@@ -58,17 +58,17 @@ def normalise(spec,niter=2,sigma_low = 0.05,deg=5):
 
     i = 0
     while i < niter:
-        print 'x_iter', x_iter, any(x_iter), len(x_iter)
-        print 'spec_iter', spec_iter, any(spec_iter), len(spec_iter)
+        #~ print 'x_iter', x_iter, any(x_iter), len(x_iter)
+        #~ print 'spec_iter', spec_iter, any(spec_iter), len(spec_iter)
         fit = polyfit(x_iter,spec_iter,deg)
         fit = polyval(fit,x_iter)
         
-        for x, y in zip(x_iter, spec_iter):
-            print x, y
+        #~ for x, y in zip(x_iter, spec_iter):
+            #~ print x, y
 
-        print 'fit', fit, any(fit)
+        #~ print 'fit', fit, any(fit)
         mask = spec_iter - fit > sigma_low * std(spec_iter-fit)
-        print 'mask', any(mask)
+        #~ print 'mask', any(mask)
         spec_iter = spec_iter[mask]
         x_iter = x_iter[mask]
         i += 1
@@ -114,6 +114,7 @@ def cross_correlation_to_find_sol(spec,testwave_centre=6500,testwave_width=300,t
     mask *= xpos < max(xpos)-150
 
     spec -= min(spec)
+    print 'spec', spec
     spec = normalise(spec[mask],deg=10)
     xpos = xpos[mask]
 
