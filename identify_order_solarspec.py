@@ -115,6 +115,8 @@ def cross_correlation_to_find_sol(spec,testwave_centre=6500,testwave_width=300,t
     mask = xpos > min(xpos)+150
     mask *= xpos < max(xpos)-150
 
+    print 'min spec', min(spec)
+
     spec -= min(spec)
     print 'spec2', spec
     spec = normalise(spec[mask],deg=10)
