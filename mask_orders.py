@@ -37,14 +37,14 @@ def return_masks(masterflat,toplot=False, config=None):
     #~ print('config', config)
     
     # MZ: a hack assuming that all flats are the same and stable
-    filename = os.path.join(config['folder'], 'temp', 'order_masks.pkl')
-    if os.path.isfile(filename):
-        f=open(filename, 'rb')
-        order_masks = pickle.load(f)
-        f.close()
-        return order_masks
-    else:
-        pass
+    #~ filename = os.path.join(config['folder'], 'temp', 'order_masks.pkl')
+    #~ if os.path.isfile(filename):
+        #~ f=open(filename, 'rb')
+        #~ order_masks = pickle.load(f)
+        #~ f.close()
+        #~ return order_masks
+    #~ else:
+        #~ pass
 
     masterflat.astype(float)
 
