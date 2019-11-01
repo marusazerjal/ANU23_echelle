@@ -46,6 +46,7 @@ def main(folder, config=None):
     
         init_wave_spec = pyfits.open(init_wave_fits)[0].data
         objectname = pyfits.getheader(init_wave_fits)["OBJECT"].replace(' ', '')
+        print 'do wavecall objectname', objectname
         bcorr = pyfits.getheader(init_wave_fits)["BCORR"]
         mask = rv_standards["Star"] == objectname
         print(rv_standards[mask]["V_r"])
