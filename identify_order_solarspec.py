@@ -60,8 +60,8 @@ def normalise(spec,niter=2,sigma_low = 0.05,deg=5):
 
     i = 0
     while i < niter:
-        #~ print 'x_iter', x_iter, any(x_iter), len(x_iter)
-        #~ print 'spec_iter', spec_iter, any(spec_iter), len(spec_iter)
+        print 'x_iter', x_iter, any(x_iter), len(x_iter)
+        print 'spec_iter', spec_iter, any(spec_iter), len(spec_iter)
         fit = polyfit(x_iter,spec_iter,deg)
         fit = polyval(fit,x_iter)
         
