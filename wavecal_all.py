@@ -25,7 +25,7 @@ def create_filelist(folder, config=None):
     print('init_wave_obj', config["init_wave_obj"])
     for fits in raw_fitslist:
         print('THE FILE', pyfits.getheader(fits)["OBJECT"], 'INIT_WAVE_OBJ', config["init_wave_obj"])
-        if pyfits.getheader(fits)["OBJECT"] == config["init_wave_obj"]:
+        if pyfits.getheader(fits)["OBJECT"].replace(' ', '') == config["init_wave_obj"]:
             init_wave_fits = fits
 
     try:
