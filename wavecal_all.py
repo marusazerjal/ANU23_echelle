@@ -48,7 +48,7 @@ def main(folder, config=None):
     #if True:
     
         init_wave_spec = pyfits.open(init_wave_fits)[0].data
-        objectname = pyfits.getheader(init_wave_fits)["OBJECT"]
+        objectname = pyfits.getheader(init_wave_fits)["OBJECT"].replace(' ', '')
         bcorr = pyfits.getheader(init_wave_fits)["BCORR"]
         mask = rv_standards["Star"] == objectname
         print('RVSTANDARDS', rv_standards[mask])
