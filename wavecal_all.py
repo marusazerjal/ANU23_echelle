@@ -14,7 +14,7 @@ import fitarc_chebyshev
 
 import pandas
 rv_standards = pandas.read_csv("RV_standard.dat",delim_whitespace=True)
-#print('rv_standards', rv_standards)
+print('rv_standardsss', rv_standards)
 
 
 
