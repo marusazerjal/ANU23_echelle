@@ -21,17 +21,17 @@ rv_standards = pandas.read_csv("RV_standard.dat",delim_whitespace=True)
 def create_filelist(folder, config=None):
     #print('path', os.path.join(folder, "temp/ANU23e*.fits"))
     raw_fitslist = sort(glob.glob(os.path.join(folder, "temp/ANU23e*.fits")))
-    print('raw_fitslist', raw_fitslist)
-    print('init_wave_obj', config["init_wave_obj"])
+    #~ print('raw_fitslist', raw_fitslist)
+    #~ print('init_wave_obj', config["init_wave_obj"])
     for fits in raw_fitslist:
-        print('THE FILE', pyfits.getheader(fits)["OBJECT"], 'INIT_WAVE_OBJ', config["init_wave_obj"])
+        #~ print('THE FILE', pyfits.getheader(fits)["OBJECT"], 'INIT_WAVE_OBJ', config["init_wave_obj"])
         if pyfits.getheader(fits)["OBJECT"].replace(' ', '') == config["init_wave_obj"]:
             init_wave_fits = fits
 
-    try:
-        print('HHHHHH', raw_fitslist,init_wave_fits)
-    except:
-        print('HHHHHH cant print (wavecall_all)')
+    #~ try:
+        #~ print('HHHHHH', raw_fitslist,init_wave_fits)
+    #~ except:
+        #~ print('HHHHHH cant print (wavecall_all)')
 
     try:
         return raw_fitslist,init_wave_fits
@@ -51,6 +51,7 @@ def main(folder, config=None):
         objectname = pyfits.getheader(init_wave_fits)["OBJECT"]
         bcorr = pyfits.getheader(init_wave_fits)["BCORR"]
         mask = rv_standards["Star"] == objectname
+        print(rv_standards[mask])
         print(rv_standards[mask]["V_r"])
         truerv = float(rv_standards[mask]["V_r"])
         print("rv standard",objectname,truerv,bcorr)
