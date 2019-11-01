@@ -63,7 +63,7 @@ def normalise(spec,niter=2,sigma_low = 0.05,deg=5):
         fit = polyfit(x_iter,spec_iter,deg)
         fit = polyval(fit,x_iter)
 
-        print 'fit', fit
+        print 'fit', fit, any(fit)
         mask = spec_iter - fit > sigma_low * std(spec_iter-fit)
         print 'mask', any(mask)
         spec_iter = spec_iter[mask]
