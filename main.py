@@ -151,7 +151,7 @@ def main():
     savetxt('masterflat.dat', masterflat)
 
     print("determine order masks")
-    if os.path.exists(os.path.join(config["folder"], "temp/order_masks.pkl")):
+    if os.path.exists(os.path.join(config["folder"], "temp/order_masks_LETS_DISABLE_THIS.pkl")):
         order_masks = pickle.load(open(os.path.join(config["folder"], "temp/order_masks.pkl"), "rb"))
     else:
         print('MASTERFLAT', masterflat)
