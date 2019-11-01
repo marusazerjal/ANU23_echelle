@@ -51,7 +51,7 @@ def main(folder, config=None):
         objectname = pyfits.getheader(init_wave_fits)["OBJECT"]
         bcorr = pyfits.getheader(init_wave_fits)["BCORR"]
         mask = rv_standards["Star"] == objectname
-        print(rv_standards[mask])
+        print('RVSTANDARDS', rv_standards[mask])
         print(rv_standards[mask]["V_r"])
         truerv = float(rv_standards[mask]["V_r"])
         print("rv standard",objectname,truerv,bcorr)
