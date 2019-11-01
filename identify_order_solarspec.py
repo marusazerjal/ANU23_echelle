@@ -49,10 +49,11 @@ def normalise(spec,niter=2,sigma_low = 0.05,deg=5):
 
     ### normalise the spectrum to 1
     
-    print spec
-    x = arange(len(spec))
+    print 'spec', spec
+    #~ x = arange(len(spec)) # MZ: commented out
     mask = spec == spec
     spec_iter = spec[mask]
+    x = arange(len(spec_iter)) # MZ: added this line
     x_iter = x.copy()
 
     i = 0
