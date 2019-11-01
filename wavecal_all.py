@@ -14,9 +14,6 @@ import fitarc_chebyshev
 
 import pandas
 rv_standards = pandas.read_csv("RV_standard.dat",delim_whitespace=True)
-print('rv_standardsss', rv_standards)
-
-
 
 def create_filelist(folder, config=None):
     #print('path', os.path.join(folder, "temp/ANU23e*.fits"))
@@ -51,7 +48,6 @@ def main(folder, config=None):
         objectname = pyfits.getheader(init_wave_fits)["OBJECT"].replace(' ', '')
         bcorr = pyfits.getheader(init_wave_fits)["BCORR"]
         mask = rv_standards["Star"] == objectname
-        print('RVSTANDARDS', rv_standards[mask])
         print(rv_standards[mask]["V_r"])
         truerv = float(rv_standards[mask]["V_r"])
         print("rv standard",objectname,truerv,bcorr)
