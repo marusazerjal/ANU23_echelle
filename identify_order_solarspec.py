@@ -49,10 +49,12 @@ def normalise(spec,niter=2,sigma_low = 0.05,deg=5):
 
     ### normalise the spectrum to 1
     
-    print 'spec', spec
+    #~ print 'spec', spec
     #~ x = arange(len(spec)) # MZ: commented out
     mask = spec == spec
     spec_iter = spec[mask]
+    print 'mask', mask
+    print 'spec_iter', spec_iter
     x = arange(len(spec_iter)) # MZ: added this line
     x_iter = x.copy()
 
@@ -108,17 +110,17 @@ def cross_correlation_to_find_sol(spec,testwave_centre=6500,testwave_width=300,t
 
     ### Cross correlate order to solar spectrum
 
-    print 'spec1', spec
+    #~ print 'spec1', spec
    
     
     xpos = arange(len(spec))-len(spec)/2
     mask = xpos > min(xpos)+150
     mask *= xpos < max(xpos)-150
 
-    print 'min spec', nanmin(spec[spec!=-inf])
+    #~ print 'min spec', nanmin(spec[spec!=-inf])
 
     spec -= nanmin(spec[spec!=-inf])
-    print 'spec2', spec
+    #~ print 'spec2', spec
     spec = normalise(spec[mask],deg=10)
     xpos = xpos[mask]
 
