@@ -57,7 +57,7 @@ def gaussian(x0,x):
     return x0[0]*exp(-(x-x0[1])**2/(2*x0[2]**2))+x0[3]
 
 def fitgaussian(x,y):
-    print(x, y)
+    print('Gaussian (x,y)', x, y)
     mask = y == y
     x,y = x[mask],y[mask]
     x = x[2:-2]

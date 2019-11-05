@@ -23,6 +23,7 @@ matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 import average_adjacent_obs
 import wavecal_all
+import copy
 
 import imp
 config_filename = sys.argv[1]
@@ -191,18 +192,12 @@ def main():
                 #print fits
                 #print(type(fits[0][0]), type(masterbias[0][0]))
 
-                print('FITS BEFORE MASTERBIAS')
-                print(fits)
                 fits -= masterbias
-                print('FITS AFTER MASTERBIAS')
-                print(fits)
-                fits = extract_order.mask_order(fits,order_masks, binning=binning)
-                
-                
-                print('DIAGNOSTICS')
-                print(fits)
 
-                import copy
+                # Mask order
+                fits = extract_order.mask_order(fits,order_masks, binning=binning)
+
+                # import copy
                 fits_noflat = copy.deepcopy(fits)
                 print("Dividing by flat")
                 for order in range(len(fits)):
@@ -220,6 +215,7 @@ def main():
                 #pickle.dump(thar_shear,open(config["folder"]+"/temp/"+fitsname+".thar.pkl","wb"))
                 #pickle.dump(fits_shear,open(config["folder"]+"/temp/"+fitsname+".shear.pkl","wb"))
 
+                # Tracing orders
                 trace_array = extract_order.find_trace(fits_noflat_shear, binning=binning)
                 plt.savefig(os.path.join(config["folder"], "temp/", fitsname+"trace.pdf"))
                 plt.clf()
