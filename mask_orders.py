@@ -33,10 +33,12 @@ def return_masks(masterflat,toplot=False, config=None):
     """
     MZ (guessing): Find orders from the masterflat. Return masks that include orders.
     """
+    
+    print('MASTERFLAT', masterflat)
     #config = config_file.set_config() # Marusa
     #~ print('config', config)
     
-    # MZ: a hack assuming that all flats are the same and stable
+    # MZ: A HACK assuming that all flats are the same and stable
     #~ filename = os.path.join(config['folder'], 'temp', 'order_masks.pkl')
     #~ if os.path.isfile(filename):
         #~ f=open(filename, 'rb')
@@ -53,8 +55,14 @@ def return_masks(masterflat,toplot=False, config=None):
 
     print("creating a set of steps for the centres of the orders")
 
-    steps = mean(masterflat[:,int(len(masterflat[0])/2-10):int(len(masterflat[0])/2+10)],axis=1)
+    # Steps: Mean values of signal in the middle of the x axis for each row
+    steps = mean(masterflat[:,int(len(masterflat[0])/2-10):int(len(masterflat[0])/2+10)], axis=1)
     #steps = steps[:-100/ybin]
+
+    #~ print('steps0')
+    #~ steps0=1.0*steps
+    #~ for x in steps:
+        #~ print(x)
 
     ### normalise the flats
     norm = []
@@ -71,13 +79,19 @@ def return_masks(masterflat,toplot=False, config=None):
     norm_max = interpolate.splrep(norm[:,0],norm[:,2],k=1)
     norm_max = interpolate.splev(x,norm_max)
 
-    # plt.plot(x,norm_min)
-    # plt.plot(x,norm_max+norm_min)
-    # plt.plot(steps)
-    # plt.show()
+    #~ fig=plt.figure()
+    #~ ax=fig.add_subplot(111)
+    #~ ax.plot(x,norm_min)
+    #~ ax.plot(x,norm_max+norm_min)
+    #fig.plot(steps)
+    #~ plt.show()
 
     steps -= norm_min
     steps /= norm_max
+
+    #~ print('steps1')
+    #~ for x0, x1 in zip(steps0, steps):
+        #~ print(x0, x1)
 
     from scipy.signal import find_peaks_cwt
     indexes = find_peaks_cwt(steps,arange(20,70,10)/ybin,min_snr=0.2)
@@ -85,16 +99,21 @@ def return_masks(masterflat,toplot=False, config=None):
     indexes = indexes[:19]
     x = arange(len(indexes))
 
+    #~ print('indexes', len(indexes), indexes)
+
     # plt.plot(steps)
     # plt.scatter(indexes,zeros(len(indexes)))
     # plt.show()
 
+    # WHAT HAPPENS HERE?
+    # MZ: I think this is to fit how indices increase along the y-axis (orders)
+    # Probably because the last orders have worse signal, and they come very close to each other.
     def minfunc(x0):
         f = x0[0]*log(x-x0[1])+x0[2]
         return (f-indexes)**2
     x0 = optimize.least_squares(minfunc,[-1.,-1.,1.,1.]).x
     x = arange(config["norder"]+1)
-    f = x0[0]*log((x-x0[1])*x0[3])+x0[2]
+    f = x0[0]*log((x-x0[1])*x0[3])+x0[2] # x0[3] is not fitted!!
 
     #f = polyfit(x,indexes,3)
     #x = arange(config["norder"]+1)
@@ -105,6 +124,8 @@ def return_masks(masterflat,toplot=False, config=None):
     # plt.show()
 
     indexes = f.astype(int)
+    #~ print('INDEXES')
+    #~ print(len(indexes), indexes)
 
     if len(indexes)-1 < config["norder"]:
         print("!!!!!!!!!!! Ah shit, did not identify enough orders, check your flats !!!!!!!!!!!!!!!!!")
@@ -113,6 +134,7 @@ def return_masks(masterflat,toplot=False, config=None):
     # plt.plot(steps,color="r")
     # plt.show()
     print("finding edges for each order")
+    #~ print(indexes)
 
     order_masks = []
     stepsize = 50
@@ -124,21 +146,26 @@ def return_masks(masterflat,toplot=False, config=None):
             if order == 0:
                 trace_top = []
                 
-                ### initiate trace
+                ### initiate trace (in the middle of the frame). MZ: It seems that the edges found above were just initial guesses. Now do this for real here.
                 xpos = arange(10/ybin,indexes[order])
-                edge = mean(masterflat[int(10/ybin):indexes[order], int(len(masterflat[0])/2) - int(10/ybin) : int(len(masterflat[0])/2+10)],axis=1)
+                #~ print('xpos', xpos)
+                # edge: average y-values for each row from the bottom of the image (10/ybin) to the y-value where order has been detected in the middle
+                edge = mean(masterflat[int(10/ybin):indexes[order], int(len(masterflat[0])/2) - int(10/ybin) : int(len(masterflat[0])/2+10)], axis=1)
+                #~ print('edge', edge)
                 mask = edge-min(edge) > cutoff*(max(edge)-min(edge))
-                edge = min(xpos[mask])
-                #print('edge0', len(edge), len(xpos))
+                edge = min(xpos[mask]) # Lower y-value where the trace begins in the middle of the image
+                #~ print('edge0', edge, len(xpos))
                 edge0 = edge
                 width = indexes[order]-edge
+                #~ print('width', width)
                 trace_top.append([len(masterflat[0])/2,edge])
 
                 ### look left
                 x = int(len(masterflat[0])/2-10)
                 while x > 100:
                     xpos = arange(10/ybin,edge+width)
-                    edge = mean(masterflat[int(10/ybin):int(edge+width), int(x-stepsize):int(x+stepsize)],axis=1)
+                    # Find the edge in the same manner as before - the only difference is that in each iteration you shift leftward for 50 (stepsize) pixels.
+                    edge = mean(masterflat[int(10/ybin):int(edge+width), int(x-stepsize):int(x+stepsize)], axis=1)
                     mask = edge-min(edge) > cutoff*(max(edge)-min(edge))
                     edge = min(xpos[mask])
                     #print('edge1', len(edge), len(xpos))
@@ -146,7 +173,10 @@ def return_masks(masterflat,toplot=False, config=None):
 
                     x -= stepsize
 
-                zpt = indexes[order]-(indexes[order]-indexes[order-1])/2
+                # ??
+                #~ print('order', order, indexes[order-1])
+                #~ zpt = indexes[order]-(indexes[order]-indexes[order-1])/2 # indexes[order-1] here means indexes[-1]!!
+                #~ print('zpt', zpt, trace_top)
                 edge = edge0
                 
                 ### look right
@@ -181,22 +211,38 @@ def return_masks(masterflat,toplot=False, config=None):
                 x = len(masterflat[0])/2-10
                 while x > 100:
                     xpos = arange(zpt+(edge-edge0),edge+width)
+                    edge_marusa=edge
                     edge = mean(masterflat[int(zpt+(edge-edge0)):int(edge+width),int(x-stepsize):int(x+stepsize)],axis=1)
                     #plt.plot(xpos,edge)
+                    print('edgggge', int(zpt+(edge_marusa-edge0)), int(edge_marusa+width), int(x-stepsize), int(x+stepsize), masterflat.shape, edge, masterflat)
+
+                    # ADDED by MARUSA:
+                    if len(xpos)>len(edge):
+                        #~ print('##########CUTTING')
+                        xpos=xpos[:len(edge)]
 
                     emin,eminpos = min(edge),xpos[argmin(edge)]
                     if min(xpos) < eminpos:
+                        print('OLD', len(xpos), len(edge))
                         xpos = xpos[argmin(edge):]
                         edge = edge[argmin(edge):]
+                        print('NEW', len(xpos), len(edge))
 
 
-                    mask = (edge-min(edge)) > cutoff*(max(edge)-min(edge))
-                    edge = min(xpos[mask])
-                    #plt.axvline(x=edge)
-                    #plt.show()
+                    print('LEN', len(xpos), len(edge), int(zpt+(edge_marusa-edge0)), edge_marusa+width, masterflat.shape, x)
+
                     
-                    trace_top.append([x,edge])
 
+                    if len(xpos)>1: # MZ
+                        mask = (edge-min(edge)) > cutoff*(max(edge)-min(edge))
+                        edge = min(xpos[mask]) # THE CODE CRASHES HERE!!
+                        #plt.axvline(x=edge)
+                        #plt.show()
+                    else:
+                        edge=edge[0]     # MZ
+                    trace_top.append([x,edge])
+                    print('edge', edge)
+                    print('\n')
                     x -= stepsize
 
                 #zpt = indexes[order]-(indexes[order]-indexes[order-1])/2
@@ -205,29 +251,47 @@ def return_masks(masterflat,toplot=False, config=None):
                 ### look right
                 x = len(masterflat[0])/2+10
                 while x < len(masterflat[0])-100:
-                    xpos = arange(zpt+(edge-edge0),edge+width)
+                    # xpos: rows in a y-direction
+                    xpos = arange(zpt+(edge-edge0),edge+width) # George
+                    #~ xpos = arange(int(zpt+(edge-edge0)),int(edge+width)) # MZ
+                    edge_marusa = edge
                     edge = mean(masterflat[int(zpt+(edge-edge0)):int(edge+width),int(x-stepsize):int(x+stepsize)],axis=1)
+                    #~ print('XXX', order, x, len(masterflat[0])-100, len(xpos), len(edge), masterflat.shape, 'zpt', int(zpt+(edge_marusa-edge0)), int(edge_marusa+width))
+                    #~ if int(edge_marusa+width)>masterflat.shape[0]:
+                        #~ print('*************', int(edge_marusa+width), masterflat.shape[0])
                     #plt.plot(xpos,edge)
 
+                    # ADDED by MARUSA:
+                    if len(xpos)>len(edge):
+                        #~ print('##########CUTTING')
+                        xpos=xpos[:len(edge)]
+
                     emin,eminpos = min(edge),xpos[argmin(edge)]
-                    if min(xpos) < eminpos:
+                    #~ print('emin, eminpos', emin, eminpos, min(xpos))
+                    if min(xpos) < eminpos: # George
+                    #~ if min(xpos) <= eminpos: # Marusa
+                        #~ print('OLD', len(xpos), len(edge))
                         xpos = xpos[argmin(edge):]
                         edge = edge[argmin(edge):]
+                        #~ print('NEW', len(xpos), len(edge))
 
 
                     
                     mask = edge-min(edge) > cutoff*(max(edge)-min(edge))
-                    edge = min(xpos[mask])
+                    #~ print('ANY(MASK)', any(mask), len(mask), len(xpos))
+                    edge = min(xpos[mask]) # THIS IS WHERE THE CODE CRASHES!!
                     #plt.axvline(x=edge)
                     #plt.show()
                     
                     trace_top.append([x,edge])
+                    #~ print([x, edge], edge0)
+                    #~ print('\n')
 
                     x += stepsize
 
 
             trace_top = array(trace_top)-2.
-            trace_top_fit = polyfit_sigclip(trace_top[:,0],trace_top[:,1])
+            trace_top_fit = polyfit_sigclip(trace_top[:,0],trace_top[:,1]) # (x,y) pixels
             #trace_top_fit = polyval(trace_top_fit,arange(len(masterflat)))
                                
 
@@ -247,9 +311,9 @@ def return_masks(masterflat,toplot=False, config=None):
                 edge = mean(masterflat[int(indexes[order]):int(zpt),int(len(masterflat[0])/2)-10:int(len(masterflat[0])/2)+10],axis=1)
             else:
                 edge = mean(masterflat[int(indexes[order]):int(zpt),int(len(masterflat[0])/2)-10:int(len(masterflat[0])/2)+10],axis=1)
-            print(len(xpos), len(edge), order)
-            print(indexes[order])
-            print(zpt)
+            #~ print(len(xpos), len(edge), order)
+            #~ print(indexes[order])
+            #~ print(zpt)
 
 
             mask = edge-min(edge) > cutoff*(max(edge)-min(edge))
@@ -328,9 +392,9 @@ def return_masks(masterflat,toplot=False, config=None):
             mask = masterflat == masterflat
             mask *= yy >  polyval(trace_top_fit,xx) 
             mask *= yy < polyval(trace_bottom_fit,xx)
-
+            #~ print('mask', mask.shape)
             order_masks.append([mask,trace_top_fit,trace_bottom_fit])
-
+    #~ print(order_masks)
     pickle.dump(order_masks, open(os.path.join(config["folder"], "temp/", "order_masks.pkl"), "wb"))
         
             
@@ -339,9 +403,18 @@ def return_masks(masterflat,toplot=False, config=None):
 
 if __name__ == "__main__":
 
-    ccdsec_min = 53
-    ccdsec_max = 2095
+    #~ ccdsec_min = 53
+    #~ ccdsec_max = 2095
 
-    masterflat = pyfits.getdata("/media/Onion/Data/ANU23echelle/20181115/bin2/temp/masterflat.fits")
-    masterflat = masterflat[:,ccdsec_min:ccdsec_max]
-    masks = return_masks(masterflat,toplot=True)
+    #~ masterflat = pyfits.getdata("/media/Onion/Data/ANU23echelle/20181115/bin2/temp/masterflat.fits")
+    #~ masterflat = masterflat[:,ccdsec_min:ccdsec_max]
+    #~ masks = return_masks(masterflat,toplot=True)
+
+    import imp
+    config_filename = sys.argv[1]
+    print('CONFIG FILENAME', config_filename)
+    config_file = imp.load_source(config_filename.replace('.py', ''), config_filename)
+    config = config_file.set_config()
+
+    masterflat = pyfits.getdata("../masterflat0719.fits")
+    masks = return_masks(masterflat, toplot=True, config=config)

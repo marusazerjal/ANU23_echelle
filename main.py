@@ -142,11 +142,15 @@ def main():
         print("create master flat")
         print(ccdsec_min, ccdsec_max, type(ccdsec_min), type(ccdsec_max))
         masterflat = calibrate.average_header_fits(config["folder"], config["flat"], os.path.join(config["folder"], "temp/masterflat.fits"))[:,ccdsec_min:ccdsec_max]
+        print('flat before bias', masterflat)
         masterflat -= masterbias
+        print('flat AFTER bias', masterflat)
 
     else:
         masterflat = pyfits.getdata(os.path.join(config["folder"], "temp/masterflat.fits"))[:,ccdsec_min:ccdsec_max]
+        print('flat before bias', masterflat)
         masterflat -= masterbias
+        print('flat AFTER bias', masterflat)
 
     savetxt('masterflat.dat', masterflat)
 
@@ -253,3 +257,4 @@ if __name__ == "__main__":
 
     main()
     
+    print('DONE.')
