@@ -139,7 +139,7 @@ def find_trace(fits_extracted, binning=None):
         #~ print(fits_extracted_order)
         center = mean(fits_extracted_order[:,len(fits_extracted_order)/2-10:len(fits_extracted_order)/2+10],axis=1)
         #~ print(center)
-        print('gaussian order')
+        print('gaussian order', order)
         width = fitgaussian(y,center)[2]
         if abs(width) > 5.0/binning:
             width = 5.0/binning
