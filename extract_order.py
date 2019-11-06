@@ -118,6 +118,7 @@ def find_trace(fits_extracted, binning=None):
     print("tracing orders")
     plt.figure(figsize=(20,20))
 
+    print(fits_extracted)
     savetxt('marusa_fits_extracted.dat', fits_extracted)
 
     trace_array = []
