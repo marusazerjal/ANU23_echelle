@@ -127,46 +127,50 @@ def find_trace(fits_extracted, binning=None):
     for order in range(len(fits_extracted)):
     #for order in [19,20,21]:
 
+        try: # Added by MZ
         
-        fits_extracted_order,xx,yy = fits_extracted[order]
-        x,y = xx[0],yy[:,0]
-        mask = fits_extracted_order == 0
-        fits_extracted_order[mask] = nan
+            fits_extracted_order,xx,yy = fits_extracted[order]
+            x,y = xx[0],yy[:,0]
+            mask = fits_extracted_order == 0
+            fits_extracted_order[mask] = nan
 
-        ### fit the middle to get a width
-        #~ print('DIAGNOSTICS', order)
-        #~ print(fits_extracted)
-        #~ print(fits_extracted_order)
-        center = mean(fits_extracted_order[:,len(fits_extracted_order)/2-10:len(fits_extracted_order)/2+10],axis=1)
-        #~ print(center)
-        print('gaussian order', order)
-        width = fitgaussian(y,center)[2]
-        if abs(width) > 5.0/binning:
-            width = 5.0/binning
-        if width < 1.5:
-            width = 1.5
-        print("width of extraction",width)
+            ### fit the middle to get a width
+            #~ print('DIAGNOSTICS', order)
+            #~ print(fits_extracted)
+            #~ print(fits_extracted_order)
+            center = mean(fits_extracted_order[:,len(fits_extracted_order)/2-10:len(fits_extracted_order)/2+10],axis=1)
+            #~ print(center)
+            print('gaussian order', order)
+            width = fitgaussian(y,center)[2]
+            if abs(width) > 5.0/binning:
+                width = 5.0/binning
+            if width < 1.5:
+                width = 1.5
+            print("width of extraction",width)
 
-        trace = []
-        for xpos in x[100:-100]:
-            try:
-                f = nanmedian(fits_extracted_order[:,xpos-50:xpos+50],axis=1)
-                x0 = shiftgaussian(y,f,width)
-                trace.append([xpos,x0[1]])
-            except ValueError:
-                print("Value error while gaussian fitting")
-                print(y,f,width)
+            trace = []
+            for xpos in x[100:-100]:
+                try:
+                    f = nanmedian(fits_extracted_order[:,xpos-50:xpos+50],axis=1)
+                    x0 = shiftgaussian(y,f,width)
+                    trace.append([xpos,x0[1]])
+                except ValueError:
+                    print("Value error while gaussian fitting")
+                    print(y,f,width)
 
-        trace = array(trace)
-        trace[:,1] = signal.medfilt(trace[:,1],5)
-        fit,dymmy,dummy = polyfit_sigclip(trace[:,0],trace[:,1],order=2,clip=2)
-        fit = polyval(fit,x)
-        #plt.scatter(trace[:,0],trace[:,1],s=2,color="r")
-        plt.plot(x,fit,color="k",lw=2)
-        plt.imshow(fits_extracted_order,extent=(min(x),max(x),min(y),max(y)),aspect="auto",origin="lowerleft")
-        #plt.show()
-        #plt.clf()
-        trace_array.append(transpose(array([x,fit,width*ones(len(x))])))
+            trace = array(trace)
+            trace[:,1] = signal.medfilt(trace[:,1],5)
+            fit,dymmy,dummy = polyfit_sigclip(trace[:,0],trace[:,1],order=2,clip=2)
+            fit = polyval(fit,x)
+            #plt.scatter(trace[:,0],trace[:,1],s=2,color="r")
+            plt.plot(x,fit,color="k",lw=2)
+            plt.imshow(fits_extracted_order,extent=(min(x),max(x),min(y),max(y)),aspect="auto",origin="lowerleft")
+            #plt.show()
+            #plt.clf()
+            trace_array.append(transpose(array([x,fit,width*ones(len(x))])))
+        except:
+            print('FIND_TRACE: order %d failed'%order)
+            pass
 
     plt.xlim(0,2048)
     plt.ylim(0,2048/binning)
