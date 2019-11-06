@@ -119,6 +119,8 @@ def find_trace(fits_extracted, binning=None):
     plt.figure(figsize=(20,20))
 
     print(fits_extracted)
+    with open('marusa_fits_extracted.pkl', 'wb') as h:
+        pickle.dump(fits_extracted, h)
     savetxt('marusa_fits_extracted.dat', fits_extracted)
 
     trace_array = []
