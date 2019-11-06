@@ -118,10 +118,10 @@ def find_trace(fits_extracted, binning=None):
     print("tracing orders")
     plt.figure(figsize=(20,20))
 
-    print(fits_extracted)
-    with open('marusa_fits_extracted.pkl', 'wb') as h:
-        pickle.dump(fits_extracted, h)
-    savetxt('marusa_fits_extracted.dat', fits_extracted)
+    #~ print(fits_extracted)
+    #~ with open('marusa_fits_extracted.pkl', 'wb') as h:
+        #~ pickle.dump(fits_extracted, h)
+    #~ savetxt('marusa_fits_extracted.dat', fits_extracted)
 
     trace_array = []
     for order in range(len(fits_extracted)):
@@ -139,6 +139,7 @@ def find_trace(fits_extracted, binning=None):
         #~ print(fits_extracted_order)
         center = mean(fits_extracted_order[:,len(fits_extracted_order)/2-10:len(fits_extracted_order)/2+10],axis=1)
         #~ print(center)
+        print('gaussian order')
         width = fitgaussian(y,center)[2]
         if abs(width) > 5.0/binning:
             width = 5.0/binning
