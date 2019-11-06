@@ -118,6 +118,8 @@ def find_trace(fits_extracted, binning=None):
     print("tracing orders")
     plt.figure(figsize=(20,20))
 
+    savetxt('marusa_fits_extracted.dat', fits_extracted)
+
     trace_array = []
     for order in range(len(fits_extracted)):
     #for order in [19,20,21]:
