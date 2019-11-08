@@ -219,9 +219,12 @@ def main():
                 trace_array = extract_order.find_trace(fits_noflat_shear, binning=binning)
                 plt.savefig(os.path.join(config["folder"], "temp/", fitsname+"trace.pdf"))
                 plt.clf()
-                pickle.dump(trace_array,open(os.path.join(config["folder"], "temp/", fitsname+".trace.pkl"),"wb"))
+                pickle.dump(trace_array, open(os.path.join(config["folder"], "temp/", fitsname+".trace.pkl"),"wb"))
 
                 print("extracting spectra")
+                print(fits_shear)
+                print(len(fits_shear))
+                print(len(trace_array))
                 spectrum,background = extract_order.extract_trace(fits_shear,trace_array)
                 spectrum_noflat,background_noflat = extract_order.extract_trace(fits_noflat_shear,trace_array)
                 tharspec,bk = extract_order.extract_trace(thar_shear,trace_array)
