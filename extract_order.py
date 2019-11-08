@@ -170,6 +170,7 @@ def find_trace(fits_extracted, binning=None):
             trace_array.append(transpose(array([x,fit,width*ones(len(x))])))
         except:
             print('FIND_TRACE: order %d failed'%order)
+            trace_array.append(transpose(array([x,ones(len(x))*nan,width*ones(len(x))]))) # MZ
             pass
 
     plt.xlim(0,2048)
