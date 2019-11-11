@@ -164,8 +164,9 @@ def average_adjacent_obs(obslist,tharlist,folder):
                         
                 if len(spectrum_list) == 1:
                     spectrum_master,background_master,thar_master,spectrum_noflat_master,background_noflat_master = spectrum_list[0],background_list[0],thar_list[0],spectrum_noflat_list[0],background_noflat_list[0]
-
+                    print('len1')
                 else:
+                    print('lenNOT1')
                     spectrum_master,background_master,thar_master,spectrum_noflat_master,background_noflat_master = [],[],[],[],[]
                     for order in range(len(spectrum_list[0])):
 
