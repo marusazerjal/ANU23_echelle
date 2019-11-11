@@ -218,7 +218,8 @@ def average_adjacent_obs(obslist,tharlist,folder):
                     except:
                         print '********', x
                         doitagain=True
-                        background_master[ix]=ones(2042)*nan # MZ
+                        #~ background_master[ix]=ones(2042)*nan # MZ
+                        background_master[ix]=ones(2042)*0 # MZ
                 if doitagain:
                     print 'AGAIN'
                     for ix, x in enumerate(background_master):
