@@ -211,12 +211,22 @@ def average_adjacent_obs(obslist,tharlist,folder):
                         
 
                 hduspec = pyfits.PrimaryHDU(array(spectrum_master),header=header)
+                doitagain=False
                 for ix, x in enumerate(background_master):
                     try:
                         print len(x)
                     except:
                         print '********', x
+                        doitagain=True
                         background_master[ix]=ones(2042)*nan # MZ
+                if doitagain:
+                    for ix, x in enumerate(background_master):
+                        try:
+                            print len(x)
+                        except:
+                            print '********2', x
+                            #~ doitagain=True
+                            #~ background_master[ix]=ones(2042)*nan # MZ
                 print('array(background_master)', len(array(background_master)))
                 print('array(background_master)', array(background_master))
                 hdubk = pyfits.ImageHDU(array(background_master))
