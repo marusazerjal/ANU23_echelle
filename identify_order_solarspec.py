@@ -60,19 +60,22 @@ def normalise(spec,niter=2,sigma_low = 0.05,deg=5):
 
     i = 0
     while i < niter:
-        print 'x_iter', x_iter, any(x_iter), len(x_iter)
-        print 'spec_iter', spec_iter, any(spec_iter), len(spec_iter)
-        fit = polyfit(x_iter,spec_iter,deg)
-        fit = polyval(fit,x_iter)
-        
-        #~ for x, y in zip(x_iter, spec_iter):
-            #~ print x, y
+        if len(x_iter)>0: # MZ
+            print 'identify_order_solarspec: x_iter', x_iter, any(x_iter), len(x_iter)
+            print 'identify_order_solarspec: spec_iter', spec_iter, any(spec_iter), len(spec_iter)
+            fit = polyfit(x_iter,spec_iter,deg)
+            fit = polyval(fit,x_iter)
+            
+            #~ for x, y in zip(x_iter, spec_iter):
+                #~ print x, y
 
-        print 'fit', fit, any(fit)
-        mask = spec_iter - fit > sigma_low * std(spec_iter-fit)
-        #~ print 'mask', any(mask)
-        spec_iter = spec_iter[mask]
-        x_iter = x_iter[mask]
+            print 'fit', fit, any(fit)
+            mask = spec_iter - fit > sigma_low * std(spec_iter-fit)
+            #~ print 'mask', any(mask)
+            spec_iter = spec_iter[mask]
+            x_iter = x_iter[mask]
+        else:
+            pass
         i += 1
 
     fit = polyfit(x_iter,spec_iter,deg)
