@@ -57,7 +57,7 @@ def gaussian(x0,x):
     return x0[0]*exp(-(x-x0[1])**2/(2*x0[2]**2))+x0[3]
 
 def fitgaussian(x,y):
-    print('Gaussian (x,y)', x, y)
+    #~ print('Gaussian (x,y)', x, y)
     mask = y == y
     x,y = x[mask],y[mask]
     x = x[2:-2]
@@ -140,7 +140,7 @@ def find_trace(fits_extracted, binning=None):
             #~ print(fits_extracted_order)
             center = mean(fits_extracted_order[:,len(fits_extracted_order)/2-10:len(fits_extracted_order)/2+10],axis=1)
             #~ print(center)
-            print('gaussian order', order)
+            #~ print('gaussian order', order)
             width = fitgaussian(y,center)[2]
             if abs(width) > 5.0/binning:
                 width = 5.0/binning
