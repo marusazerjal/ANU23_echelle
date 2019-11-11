@@ -211,7 +211,7 @@ def average_adjacent_obs(obslist,tharlist,folder):
                         
 
                 hduspec = pyfits.PrimaryHDU(array(spectrum_master),header=header)
-                print('array(background_master)', len(array(background_master, dtype=np.float64)))
+                print('array(background_master)', len(array(background_master, dtype=float64)))
                 hdubk = pyfits.ImageHDU(array(background_master))
                 hduthar = pyfits.ImageHDU(array(thar_master))
                 hduspec_nf = pyfits.ImageHDU(array(spectrum_noflat_master))
