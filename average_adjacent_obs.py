@@ -216,7 +216,7 @@ def average_adjacent_obs(obslist,tharlist,folder):
                    for i in range(len(spec)):
                       mask = spec[i] != spec[i]
                       mask += abs(spec[i]) == inf
-                      print i, spec[i], mask
+                      print i, spec[i], mask, np.any(mask)
                       indx = arange(len(spec[i]))
                       
                       if sum(mask) > 0:
