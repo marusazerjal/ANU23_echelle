@@ -220,20 +220,23 @@ def average_adjacent_obs(obslist,tharlist,folder):
                       #~ print
                       indx = arange(len(spec[i]))
                       
-                      if sum(mask) > 0:
+                      if sum(mask) > 0 and sum(mask)<len(spec[i]):
                          print 'sum(mask)', sum(mask)
                          for j in indx[mask]:
                             adjacent_indx = abs(indx-j)
                             adjacent_indx_mask = adjacent_indx > 0
-                            print adjacent_indx
-                            print len(adjacent_indx)
-                            print any(invert(mask))
-                            print adjacent_indx[invert(mask)]
+                            #~ print adjacent_indx
+                            #~ print len(adjacent_indx)
+                            #~ print any(invert(mask))
+                            #~ print adjacent_indx[invert(mask)]
                             adjacent_indx_mask *= adjacent_indx < min(adjacent_indx[invert(mask)]) + 10 # this line crashes
                             fixval = nanmean(spec[i][adjacent_indx_mask])
                             if fixval != fixval or abs(fixval) == inf:
                                fixval = nanmedian(spec[i])
                             spec[i][j] = fixval
+                        elif sum(mask)==len(spec[i]):
+                            print 'sum(mask)', sum(mask), 'setting to 0'
+                            spec[i] = zeros(len(spec[i]))
 
                       print
 
