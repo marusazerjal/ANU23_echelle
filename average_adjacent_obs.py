@@ -1,4 +1,4 @@
-import os,sys,string,pyfits,pickle,glob
+import os,sys,string,pickle,glob
 from numpy import *
 import matplotlib.pyplot as plt
 import astropy.time
