@@ -241,7 +241,7 @@ def average_adjacent_obs(obslist,tharlist,folder):
                                 spec[i] = zeros(len(spec[i]))
                       except:
                           print 'len0', 'setting to 0'
-                          spec[i] = zeros(len(spec[i]))
+                          spec[i] = zeros(2042) # HARDCODED
                       print
 
 
