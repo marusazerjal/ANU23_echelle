@@ -234,7 +234,7 @@ def average_adjacent_obs(obslist,tharlist,folder):
                             if fixval != fixval or abs(fixval) == inf:
                                fixval = nanmedian(spec[i])
                             spec[i][j] = fixval
-                        elif sum(mask)==len(spec[i]):
+                      elif sum(mask)==len(spec[i]):
                             print 'sum(mask)', sum(mask), 'setting to 0'
                             spec[i] = zeros(len(spec[i]))
 
