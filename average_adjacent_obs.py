@@ -215,13 +215,13 @@ def average_adjacent_obs(obslist,tharlist,folder):
                 def nanchecks(spec):
                    for i in range(len(spec)):
                       mask = spec[i] != spec[i]
-                      print spec[i], mask
                       mask += abs(spec[i]) == inf
-                      print i, spec[i], mask, any(mask)
-                      print
+                      print i, spec[i], mask, ~any(mask)
+                      #~ print
                       indx = arange(len(spec[i]))
                       
                       if sum(mask) > 0:
+                          print sum(mask)
                          for j in indx[mask]:
                             adjacent_indx = abs(indx-j)
                             adjacent_indx_mask = adjacent_indx > 0
@@ -231,6 +231,7 @@ def average_adjacent_obs(obslist,tharlist,folder):
                                fixval = nanmedian(spec[i])
                             spec[i][j] = fixval
 
+                      print
 
 
                    return spec
