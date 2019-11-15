@@ -216,7 +216,7 @@ def average_adjacent_obs(obslist,tharlist,folder):
                    for i in range(len(spec)):
                       mask = spec[i] != spec[i]
                       mask += abs(spec[i]) == inf
-                      
+                      print i, spec[i], mask
                       indx = arange(len(spec[i]))
                       
                       if sum(mask) > 0:
@@ -252,7 +252,7 @@ def average_adjacent_obs(obslist,tharlist,folder):
 
                 output_name = folder+"/temp/"+"ANU23e_"+obj+"_"+fitsTIME+".fits"
                 os.system("rm "+output_name)
-                hdulist.writeto(output_name,clobber=True)
+                hdulist.writeto(output_name,overwrite=True)
 
                 
 if __name__ == "__main__":
