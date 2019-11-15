@@ -1,11 +1,14 @@
-import os,sys,string,pickle,glob
-from astropy.io import fits as pyfits
+import os,sys,string,pyfits,pickle,glob
 from numpy import *
-import matplotlib
-matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 import astropy.time
 from PyAstronomy import pyasl
+
+from astropy.io import fits as pyfits
+import matplotlib
+matplotlib.use('Agg')
+
+
 
 
 # Convert HH:MM:SS.SSS into Degrees :
@@ -78,7 +81,6 @@ def return_header_numbers(header_list,header_name):
 def combine_header(header_list):
     new_header = header_list[0]
 
-    #~ print('HEADER_LIST', header_list)
     new_header["MJD-OBS"] = mean(return_header_numbers(header_list,"MJD-OBS"))
     new_header["AIRMASS"] = mean(return_header_numbers(header_list,"AIRMASS"))
     new_header["EXPTIME"] = sum(return_header_numbers(header_list,"EXPTIME"))
@@ -102,17 +104,17 @@ def combine_header(header_list):
     corr, hjd = pyasl.helcorr(longitude, latitude, altitude, \
                               ra2000, dec2000, jd, debug=False)
     
-    print(jd,corr,hjd)
+    print jd,corr,hjd
     
     new_header.set('HJD',hjd)
     new_header.set('JD',jd)
     new_header.set('BCORR',corr)
-    new_header.set('Order0',"Spectrum FFdiv+BKsub")
-    new_header.set('Order1',"Background FFdiv")
-    new_header.set('Order2',"ThAr")
-    new_header.set('Order3',"Spectrum BKsub")
-    new_header.set('Order4',"Background")
-    new_header.set('Order5',"Wavelength")
+    new_header.set('AP0',"Spectrum FFdiv+BKsub")
+    new_header.set('AP1',"Background FFdiv")
+    new_header.set('AP2',"ThAr")
+    new_header.set('AP3',"Spectrum BKsub")
+    new_header.set('AP4',"Background")
+    new_header.set('AP5',"Wavelength")
 
     return new_header,string.replace(string.replace(str(t.fits),"(UTC)",""),":","-")
     
@@ -129,7 +131,7 @@ def average_adjacent_obs(obslist,tharlist,folder):
 
             ### return spectra taken between these two thars
             
-            if obslist[1][j] > tharlist[1][i] and obslist[1][j] < tharlist[1][i+1] and os.path.exists(os.path.join(folder, "temp/", fitsname+".spec.pkl")):
+            if obslist[1][j] > tharlist[1][i] and obslist[1][j] < tharlist[1][i+1] and os.path.exists(folder+"/temp/"+fitsname+".spec.pkl"):
                 objname.append(pyfits.getheader(obslist[0][j])["OBJECT"])
                 obsindx.append(j)
 
@@ -137,8 +139,10 @@ def average_adjacent_obs(obslist,tharlist,folder):
         if len(obsindx) > 0:
 
             objectlist = unique(objname)
-            print('objectlist', objectlist)
+            print objectlist
+
             for obj in objectlist:
+                
                 spectrum_list = []
                 background_list = []
                 thar_list = []
@@ -147,10 +151,9 @@ def average_adjacent_obs(obslist,tharlist,folder):
                 header_list = []
                 
                 for i in range(len(objname)): ### read in all the spectra of that object
-                    print('OBJNAME', objname[i], obj)
                     if objname[i] == obj:
                         fitsname = os.path.basename(obslist[0][obsindx[i]])
-                        spec = pickle.load(open(os.path.join(folder, "temp/", fitsname+".spec.pkl"),"rb"))
+                        spec = pickle.load(open(folder+"/temp/"+fitsname+".spec.pkl","rb"))
                         header_list.append(pyfits.getheader(obslist[0][obsindx[i]]))
 
 
@@ -161,12 +164,12 @@ def average_adjacent_obs(obslist,tharlist,folder):
                         background_noflat_list.append(spec[4])
 
                 header,fitsTIME = combine_header(header_list)
+                print obj,len(spectrum_list)
                         
                 if len(spectrum_list) == 1:
                     spectrum_master,background_master,thar_master,spectrum_noflat_master,background_noflat_master = spectrum_list[0],background_list[0],thar_list[0],spectrum_noflat_list[0],background_noflat_list[0]
-                    print('len1')
+
                 else:
-                    print('lenNOT1')
                     spectrum_master,background_master,thar_master,spectrum_noflat_master,background_noflat_master = [],[],[],[],[]
                     for order in range(len(spectrum_list[0])):
 
@@ -208,64 +211,56 @@ def average_adjacent_obs(obslist,tharlist,folder):
                         spectrum_noflat_master.append(spec_summed)#-bk_summed)
             
         
-                        
+                ### perform checks on spectrum for nan and infs
+                def nanchecks(spec):
+                   for i in range(len(spec)):
+                      mask = spec[i] != spec[i]
+                      mask += abs(spec[i]) == inf
+                      
+                      indx = arange(len(spec[i]))
+                      
+                      if sum(mask) > 0:
+                         for j in indx[mask]:
+                            adjacent_indx = abs(indx-j)
+                            adjacent_indx_mask = adjacent_indx > 0
+                            adjacent_indx_mask *= adjacent_indx < min(adjacent_indx[invert(mask)]) + 10
+                            fixval = nanmean(spec[i][adjacent_indx_mask])
+                            if fixval != fixval or abs(fixval) == inf:
+                               fixval = nanmedian(spec[i])
+                            spec[i][j] = fixval
+
+
+
+                   return spec
+
+
+                  
+                spectrum_master = nanchecks(spectrum_master)
+                background_master = nanchecks(background_master)
+                thar_master = nanchecks(thar_master)
+                spectrum_noflat_master = nanchecks(spectrum_noflat_master)
+                background_noflat_master = nanchecks(background_noflat_master)
+
+                
 
                 hduspec = pyfits.PrimaryHDU(array(spectrum_master),header=header)
-                doitagain=False
-                for ix, x in enumerate(background_master):
-                    try:
-                        print len(x), x
-                    except:
-                        print '********', x
-                        doitagain=True
-                        #~ background_master[ix]=ones(2042)*nan # MZ
-                        background_master[ix]=ones(2042)*0 # MZ
-                if doitagain:
-                    print 'AGAIN'
-                    for ix, x in enumerate(background_master):
-                        try:
-                            print len(x), x
-                        except:
-                            print '********2', x
-                            #~ doitagain=True
-                            #~ background_master[ix]=ones(2042)*nan # MZ
-                doitagain=False
-                for ix, x in enumerate(background_noflat_master):
-                    try:
-                        print len(x), x
-                    except:
-                        print '********', x
-                        doitagain=True
-                        #~ background_master[ix]=ones(2042)*nan # MZ
-                        background_noflat_master[ix]=ones(2042)*0 # MZ
-                if doitagain:
-                    print 'AGAIN'
-                    for ix, x in enumerate(background_noflat_master):
-                        try:
-                            print len(x), x
-                        except:
-                            print '********2', x
-                            #~ doitagain=True
-                            #~ background_master[ix]=ones(2042)*nan # MZ
-                print('array(background_master)', len(array(background_master)))
-                print('array(background_master)', array(background_master))
                 hdubk = pyfits.ImageHDU(array(background_master))
                 hduthar = pyfits.ImageHDU(array(thar_master))
                 hduspec_nf = pyfits.ImageHDU(array(spectrum_noflat_master))
                 hdubk_nf = pyfits.ImageHDU(array(background_noflat_master))
                 hdulist = pyfits.HDUList([hduspec,hdubk,hduthar,hduspec_nf,hdubk_nf])
 
-                output_name = os.path.join(folder, "temp/", "ANU23e_"+obj.replace(' ', '')+"_"+fitsTIME+".fits")
-                print('create fits output_name', output_name)
-                #~ output_name = reduce(os.path.join(folder, "temp", "ANU23e_", obj, "_", fitsTIME, ".fits")) # MARUSA
-                os.system("rm "+output_name) # WHY WOULD YOU DELETE THIS? # MARUSA
-                hdulist.writeto(output_name)
+                output_name = folder+"/temp/"+"ANU23e_"+obj+"_"+fitsTIME+".fits"
+                os.system("rm "+output_name)
+                hdulist.writeto(output_name,clobber=True)
 
                 
 if __name__ == "__main__":
     import main
 
-    folder = "/media/Onion/Data/ANU23echelle/20180705/"
+    folder = "/media/Onion/Data/ANU23echelle/20190121/"
     obslist = main.return_obslist(folder)
+    print obslist
     tharlist = main.return_tharlist(folder)
+    print tharlist
     average_adjacent_obs(obslist,tharlist,folder)
