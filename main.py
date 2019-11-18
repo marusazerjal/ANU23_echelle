@@ -239,7 +239,8 @@ def main():
                 #sys.exit()
         #"""
     print("Creating fits files") # Produces ANU..fits files in the temp/ folder.
-    print('obslist, tharlist', obslist,tharlist)
+    print('obslist', obslist)
+    print('tharlist', tharlist)
     average_adjacent_obs.average_adjacent_obs(obslist,tharlist,config["folder"])
     
     print('\n\ndo wavecal_all')
