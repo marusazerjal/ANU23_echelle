@@ -31,6 +31,18 @@ print('CONFIG FILENAME', config_filename)
 config_file = imp.load_source(config_filename.replace('.py', ''), config_filename)
 config = config_file.set_config()
 
+try:
+    do_main_loop = sys.argv[2]
+    if do_main_loop=='True':
+        do_main_loop=True
+    elif do_main_loop=='False':
+        do_main_loop=False
+except:
+    do_main_loop=True
+
+print(do_main_loop)
+
+
 binning = config["binning"]
 ccdsec_min = 53
 ccdsec_max = 2095
@@ -99,18 +111,6 @@ def loadthar(jd,tharlist,masterbias):
     
         
 def main():
-    
-    try:
-        do_main_loop = sys.argv[2]
-        if do_main_loop=='True':
-            do_main_loop=True
-        elif do_main_loop=='False':
-            do_main_loop=False
-    except:
-        do_main_loop=True
-    
-    print(do_main_loop)
-    
     print("making folders")
     print(config)
     try:
@@ -237,7 +237,7 @@ def main():
                 
                 #sys.exit()
         #"""
-    print("Creating fits files")
+    print("Creating fits files") # Produces ANU..fits files in the temp/ folder.
     print('obslist, tharlist', obslist,tharlist)
     average_adjacent_obs.average_adjacent_obs(obslist,tharlist,config["folder"])
     

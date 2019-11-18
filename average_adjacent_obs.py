@@ -263,7 +263,8 @@ def average_adjacent_obs(obslist,tharlist,folder):
                 os.system("rm "+output_name)
                 hdulist.writeto(output_name,overwrite=True)
 
-                
+    print('DONE creating fits files.')
+    
 if __name__ == "__main__":
     import main
 
