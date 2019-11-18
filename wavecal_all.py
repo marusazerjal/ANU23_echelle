@@ -25,10 +25,10 @@ def create_filelist(folder, config=None):
         if pyfits.getheader(fits)["OBJECT"].replace(' ', '') == config["init_wave_obj"]:
             init_wave_fits = fits
 
-    #~ try:
-        #~ print('HHHHHH', raw_fitslist,init_wave_fits)
-    #~ except:
-        #~ print('HHHHHH cant print (wavecall_all)')
+    try:
+        print('HHHHHH', raw_fitslist,init_wave_fits)
+    except:
+        print('HHHHHH cant print (wavecall_all)')
 
     try:
         return raw_fitslist,init_wave_fits
