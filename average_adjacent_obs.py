@@ -135,6 +135,7 @@ def average_adjacent_obs(obslist,tharlist,folder):
                 objname.append(pyfits.getheader(obslist[0][j])["OBJECT"])
                 obsindx.append(j)
 
+        print'obsindx', obsindx
 
         if len(obsindx) > 0:
 
