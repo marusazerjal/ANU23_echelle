@@ -111,61 +111,62 @@ def loadthar(jd,tharlist,masterbias):
     
         
 def main():
-    print("making folders")
-    print(config)
-    try:
-        os.stat(os.path.join(config["folder"], "temp/"))
-    except:
-        print(os.path.join(config["folder"], "temp/"))
-        os.mkdir(os.path.join(config["folder"], "temp/"))  
-    try:
-        os.stat(os.path.join(config["folder"], "reduced/"))
-    except:
-        os.mkdir(os.path.join(config["folder"], "reduced/"))
+    if do_main_loop:
+        print("making folders")
+        print(config)
+        try:
+            os.stat(os.path.join(config["folder"], "temp/"))
+        except:
+            print(os.path.join(config["folder"], "temp/"))
+            os.mkdir(os.path.join(config["folder"], "temp/"))  
+        try:
+            os.stat(os.path.join(config["folder"], "reduced/"))
+        except:
+            os.mkdir(os.path.join(config["folder"], "reduced/"))
 
-    if config["delete_prev"]:
-        os.system("rm -rf "+config["folder"]+"temp/*")
-        os.system("rm -rf "+config["folder"]+"reduced/*")
-    
-    if not os.path.exists(os.path.join(config["folder"], "temp/masterbias.fits")):
-        print("create master bias")
-        print('ccdsec_min:ccdsec_max', ccdsec_min, ccdsec_max)
-        #test=calibrate.average_header_fits(config["folder"], config["bias"], os.path.join(config["folder"], "temp/masterbias.fits"))
-        #print (test)
-        print('LEN', (calibrate.average_header_fits(config["folder"], config["bias"], os.path.join(config["folder"], "temp/masterbias.fits"))))
-        masterbias = calibrate.average_header_fits(config["folder"], config["bias"], os.path.join(config["folder"], "temp/masterbias.fits"))[:,ccdsec_min:ccdsec_max]
+        if config["delete_prev"]:
+            os.system("rm -rf "+config["folder"]+"temp/*")
+            os.system("rm -rf "+config["folder"]+"reduced/*")
+        
+        if not os.path.exists(os.path.join(config["folder"], "temp/masterbias.fits")):
+            print("create master bias")
+            print('ccdsec_min:ccdsec_max', ccdsec_min, ccdsec_max)
+            #test=calibrate.average_header_fits(config["folder"], config["bias"], os.path.join(config["folder"], "temp/masterbias.fits"))
+            #print (test)
+            print('LEN', (calibrate.average_header_fits(config["folder"], config["bias"], os.path.join(config["folder"], "temp/masterbias.fits"))))
+            masterbias = calibrate.average_header_fits(config["folder"], config["bias"], os.path.join(config["folder"], "temp/masterbias.fits"))[:,ccdsec_min:ccdsec_max]
 
-    else:
-        masterbias = pyfits.getdata(os.path.join(config["folder"], "temp/masterbias.fits"))[:,ccdsec_min:ccdsec_max]
+        else:
+            masterbias = pyfits.getdata(os.path.join(config["folder"], "temp/masterbias.fits"))[:,ccdsec_min:ccdsec_max]
 
-    # MASTERFLAT
-    if not os.path.exists(os.path.join(config["folder"], "temp/masterflat.fits")):
-        print("create master flat")
-        print(ccdsec_min, ccdsec_max, type(ccdsec_min), type(ccdsec_max))
-        masterflat = calibrate.average_header_fits(config["folder"], config["flat"], os.path.join(config["folder"], "temp/masterflat.fits"))[:,ccdsec_min:ccdsec_max]
-        print('flat before bias', masterflat)
-        masterflat -= masterbias
-        print('flat AFTER bias', masterflat)
+        # MASTERFLAT
+        if not os.path.exists(os.path.join(config["folder"], "temp/masterflat.fits")):
+            print("create master flat")
+            print(ccdsec_min, ccdsec_max, type(ccdsec_min), type(ccdsec_max))
+            masterflat = calibrate.average_header_fits(config["folder"], config["flat"], os.path.join(config["folder"], "temp/masterflat.fits"))[:,ccdsec_min:ccdsec_max]
+            print('flat before bias', masterflat)
+            masterflat -= masterbias
+            print('flat AFTER bias', masterflat)
 
-    else:
-        masterflat = pyfits.getdata(os.path.join(config["folder"], "temp/masterflat.fits"))[:,ccdsec_min:ccdsec_max]
-        print('flat before bias', masterflat)
-        masterflat -= masterbias
-        print('flat AFTER bias', masterflat)
+        else:
+            masterflat = pyfits.getdata(os.path.join(config["folder"], "temp/masterflat.fits"))[:,ccdsec_min:ccdsec_max]
+            print('flat before bias', masterflat)
+            masterflat -= masterbias
+            print('flat AFTER bias', masterflat)
 
-    savetxt('masterflat.dat', masterflat)
+        savetxt('masterflat.dat', masterflat)
 
-    print("determine order masks")
-    if os.path.exists(os.path.join(config["folder"], "temp/order_masks_LETS_DISABLE_THIS.pkl")):
-        order_masks = pickle.load(open(os.path.join(config["folder"], "temp/order_masks_LALALA.pkl"), "rb"))
-    else:
-        print('MASTERFLAT', masterflat)
-        plt.imshow(masterflat, aspect="auto")
-        order_masks = mask_orders.return_masks(masterflat, config=config)
-        print 'ORDER MASKS DETERMINED', order_masks
-    plt.show()
+        print("determine order masks")
+        if os.path.exists(os.path.join(config["folder"], "temp/order_masks_LETS_DISABLE_THIS.pkl")):
+            order_masks = pickle.load(open(os.path.join(config["folder"], "temp/order_masks_LALALA.pkl"), "rb"))
+        else:
+            print('MASTERFLAT', masterflat)
+            plt.imshow(masterflat, aspect="auto")
+            order_masks = mask_orders.return_masks(masterflat, config=config)
+            print 'ORDER MASKS DETERMINED', order_masks
+        plt.show()
 
-    masterflat_extracted = extract_order.mask_order(masterflat,order_masks, binning=binning)
+        masterflat_extracted = extract_order.mask_order(masterflat,order_masks, binning=binning)
 
     ### determine a list of observations that need extracting
     tharlist = return_tharlist(config["folder"])
