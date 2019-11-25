@@ -273,9 +273,21 @@ def main(folder, photometry):
         
 if __name__ == "__main__":
 
-    import config_file
+    p=np.loadtxt('../observed_id_color.dat', dtype=str)
+
+    photometry=dict()
+    for x in p:
+        photometry[x[2]]=float(x[0])
+
+
+    import imp
+    config_filename = sys.argv[1]
+    print('CONFIG FILENAME', config_filename)
+    config_file = imp.load_source(config_filename.replace('.py', ''), config_filename)
+
+    #~ import config_file
     config = config_file.set_config()
 
     folder = config["folder"]#
     #folder = "/media/Onion/Data/ANU23echelle/20181115/bin2/"
-    main(folder)
+    main(folder, photometry)

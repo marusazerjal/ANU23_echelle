@@ -44,12 +44,16 @@ def main(folder, config=None):
     if not os.path.exists(folder+"/temp/order_initial_solutions"):
     #if True:
     
+        #~ print rv_standards
+    
         init_wave_spec = pyfits.open(init_wave_fits)[0].data
         objectname = pyfits.getheader(init_wave_fits)["OBJECT"].replace(' ', '')
         print 'do wavecall objectname', objectname
         bcorr = pyfits.getheader(init_wave_fits)["BCORR"]
         mask = rv_standards["Star"] == objectname
-        print(rv_standards[mask]["V_r"])
+        if len(rv_standards[mask])>1:
+            print('WARNING: %s appears in the RVstandards list more than once!'%objectname)
+        print('V_r', rv_standards[mask]["V_r"], 'END')
         truerv = float(rv_standards[mask]["V_r"])
         print("rv standard",objectname,truerv,bcorr)
         
