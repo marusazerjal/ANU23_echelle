@@ -1,4 +1,5 @@
-import os,sys,glob,string,pyfits
+import os,sys,glob,string#,pyfits
+from astropy.io import fits as pyfits
 from numpy import *
 import matplotlib.pyplot as plt
 from astropy import units as u
