@@ -291,8 +291,8 @@ def get_best_template(spectrum, lsd, teffinit, logginit):
     
 if __name__ == "__main__":
     #~ change='marusa'
-    spectrum = '/Users/marusa/observing/23m/echelle/test/ANU23e_13172883+2024199_2019-05-14T12-01-33.542.fits'
-    lsd = '/Users/marusa/observing/23m/echelle/test/lsd_ANU23e_13172883+2024199_2019-05-14T12-01-33.542.fits.pkl'
+    spectrum = '/data/mash/marusa/2m3data/echelle/20190514/reduced/ANU23e_13172883+2024199_2019-05-14T12-01-33.542.fits'
+    lsd = '/data/mash/marusa/2m3data/echelle/20190514/reduced/lsd_ANU23e_13172883+2024199_2019-05-14T12-01-33.542.fits.pkl'
 
     teff,logg,feh,vsini,vshift =  get_best_template(spectrum,lsd,7000,3.5)
     print(teff,logg,feh,vsini,vshift)
