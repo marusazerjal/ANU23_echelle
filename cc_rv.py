@@ -114,7 +114,7 @@ def cross_correlate_order(wave,flux,template,ap=200):
         fit = polyval(fit,wave)
         flux /= fit
     except:
-        print "Bad normalisation"
+        print("Bad normalisation")
 
     flux = -1*(flux-1)
     template_flux = -1*(template_flux-1)
@@ -135,9 +135,9 @@ def cross_correlate_order(wave,flux,template,ap=200):
     try:
         #epos = pyasl.quadExtreme(drv, cc, mode='max', dp=(50, 50), exInd=None, fullOutput=False, fullPoint=False)[0]
         dp = len(cc[cc > 0.5*nanmax(cc)])/2
-        print "len of cc peak find",dp
+        print("len of cc peak find",dp)
         epos = fitquad(drv,cc,dp=dp)
-        print "rv",epos
+        print("rv",epos)
     except:
         epos = nan
     
@@ -226,11 +226,11 @@ def main(spectrum,template,vsini=10):
     ccf = average_ccf(cc_list,drv,vsini=10,shift=nanmedian(rvlist))
     #epos = pyasl.quadExtreme(ccf[:,0], ccf[:,1], mode='max', dp=(50, 50), exInd=None, fullOutput=False, fullPoint=False)[0]
     dp = len(cc[cc > 0.5*nanmax(cc)])/2
-    print "len of cc peak find",dp
+    print("len of cc peak find",dp)
     try:
         epos = fitquad(ccf[:,0],ccf[:,1],dp=dp)
     except:
-        print "Error: bad cc"
+        print("Error: bad cc")
         epos = nan
 
     return rvlist,epos
@@ -257,7 +257,7 @@ def remove_stellar_template(template_array,spectrum_i,lsd):
         fit = polyval(fit,spectrum_i[:,0])
         template_i_interp *= fit
     except:
-        print "bad normalisation"
+        print("bad normalisation")
 
     
 
@@ -371,7 +371,7 @@ if __name__ == "__main__":
 
     rvlist,rv = main(spectrum,template)
 
-    print rvlist,rv
+    print(rvlist,rv)
     sys.exit()
     
     

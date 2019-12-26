@@ -253,6 +253,11 @@ def doorder(order,x0_init,toplot=True):
         stdev = 99
 
         
+    # MZ: sometimes stdev doesn't exist
+    try:
+        stdev2=stdev
+    except:
+        stdev=99
 
 
     if toplot:

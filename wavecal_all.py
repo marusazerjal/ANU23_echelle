@@ -81,9 +81,16 @@ def main(folder, config=None):
         savetxt(fitsname+".tharpeaks",peaklist,fmt="%.5f")
 
         #peaklist = loadtxt("thar_peaks")
-        mask = peaklist[:,0] != 0
-        mask *= peaklist[:,1] != 0
-        peaklist = peaklist[mask]
+        
+        # MZ:  mask = peaklist[:,0] != 0
+        # IndexError: too many indices for array (this happens sometimes)
+        # So I added a try-except statement
+        try:
+            mask = peaklist[:,0] != 0
+            mask *= peaklist[:,1] != 0
+            peaklist = peaklist[mask]
+        except:
+            pass
         
         ### ndeg-1 is the degree of the polynomial (counting from 0)
         ndeg_wave = 5 ### degree of cheb for the wave axis
@@ -97,7 +104,10 @@ def main(folder, config=None):
         x0 = fitarc_chebyshev.fit_chebyshev_lstsq(x0,peaklist,(ndeg_wave,ndeg_order))
 
         plt.clf()
-        fitarc_chebyshev.nice_plot(x0,peaklist,(ndeg_wave,ndeg_order))
+        try:
+            fitarc_chebyshev.nice_plot(x0,peaklist,(ndeg_wave,ndeg_order))
+        except:
+            pass
         plt.savefig(fitsname+".wavecal.pdf")
 
         wave_hdu = fitarc_chebyshev.apply_solution(x0,fits[0].data,(ndeg_wave,ndeg_order))

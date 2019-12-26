@@ -57,10 +57,6 @@ def normalise(spec,niter=1,sigma_low = 0.05,deg=5):
     
     return spec
 
-
-
-
-
 def make_rot_prof(v,vsini=100,epsilon=0.5,scale=1,vshift=0):
     
     vrot = 2*(1-epsilon)*(1-((v-vshift)/vsini)**2)**(0.5) + 0.5*pi*epsilon*(1-((v-vshift)/vsini)**2)
@@ -74,7 +70,6 @@ def make_rot_prof(v,vsini=100,epsilon=0.5,scale=1,vshift=0):
     vrot *= scale
     
     return vrot
-
 
 def vrot_minfunc(x0,vel,ccf):
     ### x0 = [vsini,epsilon,scale,vshift]
@@ -114,10 +109,6 @@ def fit_ccf(ccf,vel):
         
     
     return x0
-
-
-
-
 
 def convmtx(v, n):
     """Generates a convolution matrix
@@ -385,6 +376,9 @@ def run_spectrum(spectrum_file,template_file):
             flux = spectrum_hdulist[0].data[order][200:-200]
         spectrum_array.append(transpose(array([wave,flux])))
 
+    print 'spectrum_array,template_array'
+    print spectrum_array,template_array
+
     ccf_list = lsd_all(spectrum_array,template_array)
     ccf_master,vsini,shift = average_ccf(ccf_list)
 
@@ -392,8 +386,10 @@ def run_spectrum(spectrum_file,template_file):
     spectrum_name = os.path.basename(spectrum_file)
     spectrum_path = string.replace(spectrum_file,spectrum_name,"")
     
-    print 'Writing to', spectrum_path+"lsd_"+spectrum_name+".pkl"
-    pickle.dump([ccf_list,ccf_master,vsini,shift],open(spectrum_path+"lsd_"+spectrum_name+".pkl","wb"))
+    print 'ccf_master', ccf_master
+    
+    print 'Writing to', os.path.join(spectrum_path, "lsd_"+spectrum_name+".pkl")
+    pickle.dump([ccf_list,ccf_master,vsini,shift], open(os.path.join(spectrum_path, "lsd_"+spectrum_name+".pkl"),"wb"))
 
     
     return ccf_master,vsini,shift

@@ -78,6 +78,12 @@ def normalise(spec,niter=2,sigma_low = 0.05,deg=5):
             pass
         i += 1
 
+    # MZ: if len is 0, then you cannot normalise and just return what you have
+    if len(x_iter)<1:
+        return spec
+    else:
+        pass
+
     fit = polyfit(x_iter,spec_iter,deg)
     fit = polyval(fit,x)
     max_prefit = max(fit)

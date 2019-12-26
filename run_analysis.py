@@ -12,10 +12,13 @@ import spectype
 #from astroquery.vizier import Vizier
 from astroquery.gaia import Gaia
 
+import prepare_synthetic_templates
+
 import warnings
 warnings.filterwarnings("ignore")
 
-speclib = "/media/Onion/Data/spectral_library/lib/"
+#~ speclib = "/media/Onion/Data/spectral_library/lib/"
+speclib = "../templates/"
 
 
 # Convert HH:MM:SS.SSS into Degrees :
@@ -112,7 +115,7 @@ def roundnearest(val,r):
 def estimate_teff_from_bp_rp(bp_rp):
     # Estimate temperature from the colour
     z = [33.14962128, -476.14587496, 2546.45692104, -6360.12338185, 9466.73218724]
-    p = np.poly1d(z)
+    p = poly1d(z)
     teff = p(bp_rp)
     return teff
 
@@ -194,6 +197,7 @@ def main(folder, photometry):
            hjd = fitsheader["HJD"]
            bcorr = fitsheader["BCORR"]
            exptime = fitsheader["EXPTIME"]
+           print 'objectname', objectname
 
            c = SkyCoord(ra+" "+dec, frame='icrs', unit=(u.hourangle, u.deg))
 
@@ -206,7 +210,8 @@ def main(folder, photometry):
 
            try:
                #~ teff,rstar,gmag = getteff(c)
-               teff, _, _ = estimate_teff_from_bp_rp(bp_rp)
+               #~ teff, _, _ = estimate_teff_from_bp_rp(bp_rp)
+               teff = estimate_teff_from_bp_rp(bp_rp)
                #~ print "Gaia teff,rstar,gmag",teff,rstar,gmag
                print "Estimated photometric teff",teff#,rstar,gmag
                #~ teff = int(roundnearest(teff,250))
@@ -228,8 +233,12 @@ def main(folder, photometry):
             
            # Create a template with this temperature
            template = '../template.dat'
-           w, flux = prepare_sinthetic_templates.get_spectrum(teff)
+           w, flux = prepare_synthetic_templates.get_spectrum(teff)
            fle = open(template, 'wb')
+           print w
+           print flux
+           print len(w)
+           print len(flux)
            for ww, ff in zip(w, flux):
                fle.write('%f %f\n'%(ww, ff))
            fle.close()
@@ -239,13 +248,20 @@ def main(folder, photometry):
            snr = measure_snr(fits)
            ccf,vsini,lsdshift = lsd.run_spectrum(fits,template)
 
-           if rstar < 3:
-              logg = 3.5
-           else:
-              logg = 2.0 ### initial logg minimum. If rstar < 3, allow all logg, else only allow dwarfish logg
+           #~ if rstar < 3:
+              #~ logg = 3.5
+           #~ else:
+              #~ logg = 2.0 ### initial logg minimum. If rstar < 3, allow all logg, else only allow dwarfish logg
+              
+           logg = 5.0 # MZ hack
 
-           teff,logg,feh,vsini,lsdshift = spectype.get_best_template(fits,folder+"/reduced/lsd_"+os.path.basename(fits)+".pkl",teff,logg)
+           teff,logg,feh,vsini,lsdshift = spectype.get_best_template(fits, os.path.join(folder, "reduced/lsd_"+os.path.basename(fits)+".pkl"),teff,logg)
            template = speclib+"template_"+str(int(teff))+"_"+str(logg)+"_"+str(feh)+".dat"
+           
+           template = os.path.join(speclib, 'template_%d.dat'%int(teff)) # MZ. Only temperature for now
+           
+           print 'TEMPLATE', template
+           
            if not os.path.exists(template):
               print "Template doesn't exist, trying a logg=4.5,feh=0.0 template"
               feh,logg = 0.0,4.5
@@ -274,7 +290,7 @@ def main(folder, photometry):
         
 if __name__ == "__main__":
 
-    p=np.loadtxt('../observed_id_color.dat', dtype=str)
+    p=loadtxt('../observed_id_color.dat', dtype=str)
 
     photometry=dict()
     for x in p:
