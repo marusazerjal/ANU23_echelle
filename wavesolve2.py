@@ -253,11 +253,6 @@ def doorder(order,x0_init,toplot=True):
         stdev = 99
 
         
-    # MZ: sometimes stdev doesn't exist
-    try:
-        stdev2=stdev
-    except:
-        stdev=99
 
 
     if toplot:
@@ -322,4 +317,3 @@ if __name__ == "__main__":
 
     initial_solutions = loadtxt("/media/Onion/Data/ANU23echelle/20181115/bin2/temp/order_initial_solutions")
     run_spectrum(arc,initial_solutions)
-    

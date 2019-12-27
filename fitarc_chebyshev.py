@@ -9,86 +9,80 @@ import emcee
 from astropy.io import fits as pyfits
 
 def chebyshev(x0,peaklist,shape):
-    try:
-        x0 = reshape(x0,shape)
-        
-        peaklist[:,0] += 34.145
-        
-        ### Follow buchhave's thesis
+    x0 = reshape(x0,shape)
+    
+    peaklist[:,0] += 34.145
+    
+    ### Follow buchhave's thesis
 
-        xmax = 1000
-        xmin = -1000 ### pixels
-        xnorm = (2*peaklist[:,1] - (xmax+xmin)) / (xmax-xmin) ### normalise the x-axis
+    xmax = 1000
+    xmin = -1000 ### pixels
+    xnorm = (2*peaklist[:,1] - (xmax+xmin)) / (xmax-xmin) ### normalise the x-axis
 
-        order_min = 0+34
-        order_max = 20+34
-        order_norm = (2*peaklist[:,0] - (order_max+order_min)) / (order_max-order_min) ### normalise the order axis
+    order_min = 0+34
+    order_max = 20+34
+    order_norm = (2*peaklist[:,0] - (order_max+order_min)) / (order_max-order_min) ### normalise the order axis
 
-     
-        Pm_list = [1,xnorm]
-        Pn_list = [1,order_norm]
+ 
+    Pm_list = [1,xnorm]
+    Pn_list = [1,order_norm]
+    
+    for m in range(2,len(x0)):
+        Pm_list.append(2*xnorm*Pm_list[m-1]-Pm_list[m-2]) ### Chebyshev
+        #Pm_list.append(((2*(m-1)+1)*xnorm*Pm_list[m-1] - m*Pm_list[m-2])/(m)) ### Legendre
         
-        for m in range(2,len(x0)):
-            Pm_list.append(2*xnorm*Pm_list[m-1]-Pm_list[m-2]) ### Chebyshev
-            #Pm_list.append(((2*(m-1)+1)*xnorm*Pm_list[m-1] - m*Pm_list[m-2])/(m)) ### Legendre
+    for n in range(2,len(x0[0])):
+        Pn_list.append(2*order_norm*Pn_list[n-1]-Pn_list[n-2]) ### Chebyshev
+        #Pn_list.append(((2*(n-1)+1)*order_norm*Pn_list[n-1] - n*Pn_list[n-2])/(n)) ### Legendre
+                       
+        
+    ### compute polynomial
+    f = zeros(len(peaklist))
+    for m in range(len(x0)):
+        for n in range(len(x0[0])):
+            f += x0[m,n] * Pm_list[m] * Pn_list[n]
             
-        for n in range(2,len(x0[0])):
-            Pn_list.append(2*order_norm*Pn_list[n-1]-Pn_list[n-2]) ### Chebyshev
-            #Pn_list.append(((2*(n-1)+1)*order_norm*Pn_list[n-1] - n*Pn_list[n-2])/(n)) ### Legendre
-                           
-            
-        ### compute polynomial
-        f = zeros(len(peaklist))
-        for m in range(len(x0)):
-            for n in range(len(x0[0])):
-                f += x0[m,n] * Pm_list[m] * Pn_list[n]
-                
 
-        ### finally, compute to wavelength
-        wave = f / peaklist[:,0]
+    ### finally, compute to wavelength
+    wave = f / peaklist[:,0]
 
 
-        return wave
-    except:
-        return nan
+    return wave
+
 
 
 def fit_chebyshev_lstsq(x0_init,peaklist,shape):
 
     # x0 = optimize.least_squares(minfunc,x0_init).x
 
-    # MZ: added try-except statement
 
-    try:
-        niter = 5
-        clip = 0.9
-        i = 0
-        mask = peaklist[:,0]==peaklist[:,0]
-        while i < niter:
-            def minfunc(x0):
-                wave = chebyshev(x0,peaklist.copy()[mask],shape)
-                lstsq = (wave-peaklist[:,2][mask])**2
-                return lstsq
-            
-            x0 = optimize.least_squares(minfunc,x0_init).x
-
+    niter = 5
+    clip = 0.9
+    i = 0
+    mask = peaklist[:,0]==peaklist[:,0]
+    while i < niter:
+        def minfunc(x0):
             wave = chebyshev(x0,peaklist.copy()[mask],shape)
             lstsq = (wave-peaklist[:,2][mask])**2
-            
-            lstsq_percentile = sort(lstsq)[int(clip*len(lstsq))]
-
-            wave = chebyshev(x0,peaklist.copy(),shape)
-            lstsq = (wave-peaklist[:,2])**2
-            mask = lstsq < lstsq_percentile ### remove outliers
-            print(len(lstsq[mask]))
-            i += 1
-
+            return lstsq
         
-        savetxt("chebyshev_solution",reshape(x0,shape))
+        x0 = optimize.least_squares(minfunc,x0_init).x
+
+        wave = chebyshev(x0,peaklist.copy()[mask],shape)
+        lstsq = (wave-peaklist[:,2][mask])**2
         
-        return x0
-    except:
-        return nan
+        lstsq_percentile = sort(lstsq)[int(clip*len(lstsq))]
+
+        wave = chebyshev(x0,peaklist.copy(),shape)
+        lstsq = (wave-peaklist[:,2])**2
+        mask = lstsq < lstsq_percentile ### remove outliers
+        print(len(lstsq[mask]))
+        i += 1
+
+    
+    savetxt("chebyshev_solution",reshape(x0,shape))
+    
+    return x0
     
 
 def nice_plot(x0,peaklist,shape):

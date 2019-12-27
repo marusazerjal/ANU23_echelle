@@ -5,6 +5,8 @@ import matplotlib.pyplot as plt
 from astropy import units as u
 from astropy.coordinates import SkyCoord
 
+# source /data/mash/marusa/reductions_echelle/venv_echelle/bin/activate
+
 import cc_rv
 import lsd
 import plot_spectra_anl
