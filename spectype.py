@@ -103,13 +103,14 @@ def fitlsd_mcmc(lsd,vsini_init=40,nrun=500):
     for i in range(nwalkers):
         print('fitlsd_mcmc', random.normal(vsini_init,0.05*vsini_init))
         print('second', maxheight, random.normal(maxheight,0.1*maxheight))
-        print('trhird', random.normal(vmean,1.))
+        print('third', random.normal(vmean,1.))
         x0_i = [random.normal(vsini_init,0.05*vsini_init),random.normal(maxheight,0.1*maxheight),random.normal(vmean,1.)]
         p0.append(x0_i)
     ndim = len(p0[0])
 
     sampler = emcee.EnsembleSampler(nwalkers,ndim,vrot_minfunc,args=(lsd[:,0],lsd[:,1],noise),threads=1)
 
+    print('Run emcee...')
     pos,prob,state = sampler.run_mcmc(p0,nrun*2)
     sampler.reset()
 
@@ -282,6 +283,8 @@ def get_best_template(spectrum, lsd, teffinit, logginit):
         bestfit.append([lstsq]+list(library[0][library_mask][i]))
 
 
+    fits.close() # Added by MZ
+
     bestfit = array(bestfit)
     bestfit = bestfit[argmin(bestfit[:,0])]
     print("best fit spectype", bestfit)
@@ -295,7 +298,7 @@ if __name__ == "__main__":
     lsd = '/data/mash/marusa/2m3data/echelle/20190514/reduced/lsd_ANU23e_13172883+2024199_2019-05-14T12-01-33.542.fits.pkl'
 
     teff,logg,feh,vsini,vshift =  get_best_template(spectrum,lsd,7000,3.5)
-    print(teff,logg,feh,vsini,vshift)
+    print('teff,logg,feh,vsini,vshift', teff,logg,feh,vsini,vshift)
     
     lsd_list,lsd_master,vsini,shift = pickle.load(open(lsd,"rb"))
     spectrum = fits.open(spectrum)
@@ -325,3 +328,4 @@ if __name__ == "__main__":
             
 
     plot_template(template_array,spectrum_array,lsd_interp)
+    print('DONE')
