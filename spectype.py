@@ -283,7 +283,7 @@ def get_best_template(spectrum, lsd, teffinit, logginit):
         bestfit.append([lstsq]+list(library[0][library_mask][i]))
 
 
-    fits.close() # Added by MZ
+    spectrum.close() # Added by MZ
 
     bestfit = array(bestfit)
     bestfit = bestfit[argmin(bestfit[:,0])]
