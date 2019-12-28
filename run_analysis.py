@@ -20,7 +20,7 @@ import warnings
 warnings.filterwarnings("ignore")
 
 #~ speclib = "/media/Onion/Data/spectral_library/lib/"
-speclib = "../templates/"
+speclib = "templates/"
 
 
 # Convert HH:MM:SS.SSS into Degrees :
@@ -204,21 +204,21 @@ def main(folder, photometry):
            c = SkyCoord(ra+" "+dec, frame='icrs', unit=(u.hourangle, u.deg))
 
            # Find BP-RP
-           try:
-               bp_rp = photometry[objectname]
-           except:
-               bp_rp = None
+           #~ try:
+               #~ bp_rp = photometry[objectname]
+           #~ except:
+               #~ bp_rp = None
                # Now what?
 
            try:
-               #~ teff,rstar,gmag = getteff(c)
+               teff,rstar,gmag = getteff(c)
                #~ teff, _, _ = estimate_teff_from_bp_rp(bp_rp)
-               teff = estimate_teff_from_bp_rp(bp_rp)
-               #~ print "Gaia teff,rstar,gmag",teff,rstar,gmag
-               print "Estimated photometric teff",teff#,rstar,gmag
-               #~ teff = int(roundnearest(teff,250))
-               #~ rstar = int(roundnearest(rstar,0.5))
-               #~ gmag = float(gmag)
+               #~ teff = estimate_teff_from_bp_rp(bp_rp)
+               print("Gaia teff,rstar,gmag",teff,rstar,gmag)
+               #~ print("Estimated photometric teff",teff#,rstar,gmag
+               teff = int(roundnearest(teff,250))
+               rstar = int(roundnearest(rstar,0.5))
+               gmag = float(gmag)
 
            except (ValueError,IndexError):
                print "Error on teff"
@@ -234,18 +234,18 @@ def main(folder, photometry):
 
             
            # Create a template with this temperature
-           template = '../template.dat'
-           w, flux = prepare_synthetic_templates.get_spectrum(teff)
-           fle = open(template, 'wb')
-           print w
-           print flux
-           print len(w)
-           print len(flux)
-           for ww, ff in zip(w, flux):
-               fle.write('%f %f\n'%(ww, ff))
-           fle.close()
+           #~ template = '../template.dat'
+           #~ w, flux = prepare_synthetic_templates.get_spectrum(teff)
+           #~ fle = open(template, 'wb')
+           #~ print w
+           #~ print flux
+           #~ print len(w)
+           #~ print len(flux)
+           #~ for ww, ff in zip(w, flux):
+               #~ fle.write('%f %f\n'%(ww, ff))
+           #~ fle.close()
 
-           #~ template = speclib+"template_"+str(teff)+"_4.0_0.0.dat"
+           template = speclib+"template_"+str(teff)+"_4.0_0.0.dat"
 
            snr = measure_snr(fits)
            ccf,vsini,lsdshift = lsd.run_spectrum(fits,template)
@@ -260,24 +260,24 @@ def main(folder, photometry):
            teff,logg,feh,vsini,lsdshift = spectype.get_best_template(fits, os.path.join(folder, "reduced/lsd_"+os.path.basename(fits)+".pkl"),teff,logg)
            template = speclib+"template_"+str(int(teff))+"_"+str(logg)+"_"+str(feh)+".dat"
            
-           template = os.path.join(speclib, 'template_%d.dat'%int(teff)) # MZ. Only temperature for now
+           #~ template = os.path.join(speclib, 'template_%d.dat'%int(teff)) # MZ. Only temperature for now
            
-           print 'TEMPLATE', template
+           #~ print 'TEMPLATE', template
            
            if not os.path.exists(template):
-              print "Template doesn't exist, trying a logg=4.5,feh=0.0 template"
+              print("Template doesn't exist, trying a logg=4.5,feh=0.0 template")
               feh,logg = 0.0,4.5
               template = speclib+"template_"+str(int(teff))+"_"+str(logg)+"_"+str(feh)+".dat"
-              print "using template",template
+              print("using template",template)
 
            rvlist,ccfrv = cc_rv.main(fits,template,vsini=vsini)
            rvlist[:,1] += bcorr
            ccfrv += bcorr
            telrv = cc_rv.measure_telluric_rv(fits,template,vsini,lsdshift)
 
-           print "CCF RV",ccfrv
+           print("CCF RV",ccfrv)
 
-           print "diagnostic",fits,template,int(teff),logg,feh,vsini,lsdshift
+           print("diagnostic",fits,template,int(teff),logg,feh,vsini,lsdshift)
 
            plot_spectra_anl.main(fits,template,int(teff),logg,feh,vsini,lsdshift)
            rvlist = [objectname,fits,hjd,convHMS(ra),convDMS(dec),gmag,exptime,teff,logg,feh,snr,bcorr,telrv,vsini,lsdshift+bcorr,ccfrv]+list(rvlist[:,1])
@@ -292,11 +292,11 @@ def main(folder, photometry):
         
 if __name__ == "__main__":
 
-    p=loadtxt('../observed_id_color.dat', dtype=str)
+    #~ p=loadtxt('../observed_id_color.dat', dtype=str)
 
-    photometry=dict()
-    for x in p:
-        photometry[x[2]]=float(x[0])
+    #~ photometry=dict()
+    #~ for x in p:
+        #~ photometry[x[2]]=float(x[0])
 
 
     import imp
