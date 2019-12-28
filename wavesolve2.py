@@ -131,6 +131,8 @@ def polyfit_sigclip(x,y,order=2,clip=2,niter=3): ### clip in sigma
     
 
 def doorder(order,x0_init,toplot=True):
+    # MZ: set stdev so it exists in any case
+    stdev=99
     
     xpos = arange(len(order))-len(order)/2
     wave_init = polyval(x0_init,xpos)
