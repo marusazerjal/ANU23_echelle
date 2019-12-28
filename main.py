@@ -252,7 +252,8 @@ def main():
         
         import run_analysis
         # Photometry to estimate temperature to find the template. Photometry should be a dictionary with objectnames and BP-RP
-        run_analysis.main(config["folder"], photometry)
+        #~ run_analysis.main(config["folder"], photometry)
+        run_analysis.main(config["folder"])
     
 if __name__ == "__main__":
 

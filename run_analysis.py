@@ -182,7 +182,8 @@ def measure_snr(fitsname):
    return nanmax(array(snrlist))
 
  
-def main(folder, photometry):
+#~ def main(folder, photometry):
+def main(folder):
     """
     Photometry should be a dictionary with objectnames and BP-RP
     """
