@@ -80,6 +80,7 @@ def main(folder, config=None):
         peaklist = wavesolve.run_spectrum(arc,initial_solutions) ### identifies a list of ThAr peaks
         savetxt(fitsname+".tharpeaks",peaklist,fmt="%.5f")
 
+        print('PEAKLIST', peaklist) # MZ
         #peaklist = loadtxt("thar_peaks")
         mask = peaklist[:,0] != 0
         mask *= peaklist[:,1] != 0
