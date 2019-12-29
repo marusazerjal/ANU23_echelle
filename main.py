@@ -111,6 +111,20 @@ def loadthar(jd,tharlist,masterbias):
     
         
 def main():
+    # Check if RV_standards includes only one line per a unique object.
+    # E.g. if someone adds a line with the same object name, the code
+    # later crashes.
+    tmp = np.loadtxt('RV_standard.dat', dtype=str)
+    l=list(tmp[:,0])
+    ex=False
+    for x in tmp:
+        if l.count(x)>1:
+            print('%s is listed more than once in the RV_standard.dat. Please keep only one!'%x)
+            ex=True
+    if ex:
+        exit()
+    
+    
     if do_main_loop:
         print("making folders")
         print(config)
