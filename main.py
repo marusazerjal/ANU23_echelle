@@ -117,7 +117,7 @@ def main():
     tmp = loadtxt('RV_standard.dat', dtype=str)
     l=list(tmp[:,0])
     ex=False
-    for x in tmp:
+    for x in tmp[:,0]:
         if l.count(x)>1:
             print('%s is listed more than once in the RV_standard.dat. Please keep only one!'%x)
             ex=True
