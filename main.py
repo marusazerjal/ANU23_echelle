@@ -114,7 +114,7 @@ def main():
     # Check if RV_standards includes only one line per a unique object.
     # E.g. if someone adds a line with the same object name, the code
     # later crashes.
-    tmp = np.loadtxt('RV_standard.dat', dtype=str)
+    tmp = loadtxt('RV_standard.dat', dtype=str)
     l=list(tmp[:,0])
     ex=False
     for x in tmp:
