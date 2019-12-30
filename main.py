@@ -31,6 +31,21 @@ print('CONFIG FILENAME', config_filename)
 config_file = imp.load_source(config_filename.replace('.py', ''), config_filename)
 config = config_file.set_config()
 
+
+# Check if RV_standards includes only one line per a unique object.
+# E.g. if someone adds a line with the same object name, the code
+# later crashes.
+tmp = loadtxt('RV_standard.dat', dtype=str)
+l=list(tmp[:,0])
+ex=False
+for x in tmp[:,0]:
+    if l.count(x)>1:
+        print('%s is listed more than once in the RV_standard.dat. Please keep only one!'%x)
+        ex=True
+if ex:
+    exit()
+
+
 try:
     do_main_loop = sys.argv[2]
     if do_main_loop=='True':
@@ -111,20 +126,6 @@ def loadthar(jd,tharlist,masterbias):
     
         
 def main():
-    # Check if RV_standards includes only one line per a unique object.
-    # E.g. if someone adds a line with the same object name, the code
-    # later crashes.
-    tmp = loadtxt('RV_standard.dat', dtype=str)
-    l=list(tmp[:,0])
-    ex=False
-    for x in tmp[:,0]:
-        if l.count(x)>1:
-            print('%s is listed more than once in the RV_standard.dat. Please keep only one!'%x)
-            ex=True
-    if ex:
-        exit()
-    
-    
     if do_main_loop:
         print("making folders")
         print(config)
@@ -190,7 +191,8 @@ def main():
     if do_main_loop:
         for i in range(len(obslist[0])):
             fitsname = os.path.basename(obslist[0][i])
-            print(fitsname)
+            print('######################################')
+            print('REDUCING', fitsname)
             #print('&&&&&&& fitsname', fitsname, os.path.exists(os.path.join(config["folder"], "temp/", fitsname+".spec.pkl")))
             if not os.path.exists(os.path.join(config["folder"], "temp/", fitsname+".spec.pkl")): ### check whether obs was reduced
                 print("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@")
