@@ -128,9 +128,11 @@ def average_adjacent_obs(obslist,tharlist,folder):
         objname = []
         for j in range(len(obslist[1])):
             fitsname = os.path.basename(obslist[0][j])
-            print fitsname
+            #~ print fitsname
 
             ### return spectra taken between these two thars
+            
+            print 'comparison', obslist[1][j], tharlist[1][i]
             
             if obslist[1][j] > tharlist[1][i] and obslist[1][j] < tharlist[1][i+1] and os.path.exists(folder+"/temp/"+fitsname+".spec.pkl"):
                 print 'in the loop', j

@@ -182,6 +182,7 @@ def main():
 
         # Plot and save figure
         plt.figure()
+        from matplotlib.colors import LogNorm
         plt.imshow(masterflat, cmap='gray', norm=LogNorm(vmin=minimum, vmax=maximum))
 
         plt.savefig(fl_out)
