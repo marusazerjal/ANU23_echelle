@@ -45,10 +45,10 @@ def main(folder, config=None):
     #if True:
     
         #~ print rv_standards
-    
+        print('init_wave_spec', init_wave_fits)
         init_wave_spec = pyfits.open(init_wave_fits)[0].data
         objectname = pyfits.getheader(init_wave_fits)["OBJECT"].replace(' ', '')
-        print 'do wavecall objectname', objectname
+        print('do wavecall objectname', objectname)
         bcorr = pyfits.getheader(init_wave_fits)["BCORR"]
         mask = rv_standards["Star"] == objectname
         if len(rv_standards[mask])>1:
