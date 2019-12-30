@@ -170,6 +170,27 @@ def main():
             print('flat AFTER bias', masterflat)
 
         savetxt('masterflat.dat', masterflat)
+        
+        # PLOT MASTERFLAT
+        # Set colorscale
+        minimum = np.percentile(masterflat, 30)
+        maximum = np.percentile(masterflat, 95)
+
+        print(minimum, maximum)
+
+        fl_out = 'masterflat.png'
+
+        # Plot and save figure
+        plt.figure()
+        plt.imshow(masterflat, cmap='gray', norm=LogNorm(vmin=minimum, vmax=maximum))
+
+        plt.savefig(fl_out)
+
+        
+        
+        
+        
+        
 
         print("determine order masks")
         if os.path.exists(os.path.join(config["folder"], "temp/order_masks_LETS_DISABLE_THIS.pkl")):

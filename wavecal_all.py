@@ -26,7 +26,8 @@ def create_filelist(folder, config=None):
             init_wave_fits = fits
 
     try:
-        print('HHHHHH', raw_fitslist,init_wave_fits)
+        print('HHHHHH', raw_fitslist)
+        print('init_wave_fits', init_wave_fits)
     except:
         print('HHHHHH cant print (wavecall_all)')
 
@@ -45,7 +46,7 @@ def main(folder, config=None):
     #if True:
     
         #~ print rv_standards
-        print('init_wave_spec', init_wave_fits)
+        print('init_wave_spec', init_wave_fits) # This is RV standard star
         init_wave_spec = pyfits.open(init_wave_fits)[0].data
         objectname = pyfits.getheader(init_wave_fits)["OBJECT"].replace(' ', '')
         print('do wavecall objectname', objectname)
