@@ -126,9 +126,10 @@ def average_adjacent_obs(obslist,tharlist,folder):
     for i in range(len(tharlist[0])-1):
         obsindx = []
         objname = []
+        print 'thar', tharlist[0][i]
         for j in range(len(obslist[1])):
             fitsname = os.path.basename(obslist[0][j])
-            #~ print fitsname
+            print fitsname
 
             ### return spectra taken between these two thars
             
