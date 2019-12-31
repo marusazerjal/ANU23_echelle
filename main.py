@@ -95,7 +95,7 @@ def return_tharlist(folder):
             #~ print(pyfits.getheader(fits)["OBJECT"])
     
     print('THSRLIST', sorted(tharlist))
-    exit()
+    #~ exit()
     
     return tharlist
 
@@ -131,7 +131,7 @@ def loadthar(jd,tharlist,masterbias):
     
         
 def main():
-    tharlist = return_tharlist(config["folder"])
+    #~ tharlist = return_tharlist(config["folder"])
     
     
     if do_main_loop:
