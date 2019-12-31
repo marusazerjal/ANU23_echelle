@@ -87,6 +87,7 @@ def return_tharlist(folder):
     fitslist = sort(glob.glob(folder+"*.fits"))
     tharlist = [[],[]]
     for fits in fitslist:
+        print('RETURN THARLIST', fits, pyfits.getheader(fits)["OBJECT"])
         if pyfits.getheader(fits)["OBJECT"].replace(' ', '') == config["arc"]:
             tharlist[0].append(fits)
             tharlist[1].append(pyfits.getheader(fits)[config["jdheader"]])
