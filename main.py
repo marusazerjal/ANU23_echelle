@@ -130,6 +130,9 @@ def loadthar(jd,tharlist,masterbias):
     
         
 def main():
+    tharlist = return_tharlist(config["folder"])
+    
+    
     if do_main_loop:
         print("making folders")
         print(config)
