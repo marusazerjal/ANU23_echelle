@@ -162,6 +162,26 @@ def main():
         else:
             masterbias = pyfits.getdata(os.path.join(config["folder"], "temp/masterbias.fits"))[:,ccdsec_min:ccdsec_max]
 
+        savetxt('masterbias.dat', masterbias)
+
+
+        # PLOT MASTERBIAS
+        # Set colorscale
+        minimum = percentile(masterbias, 5)
+        maximum = percentile(masterbias, 95)
+
+        print(minimum, maximum)
+
+        fl_out = 'masterbias.png'
+
+        # Plot and save figure
+        plt.figure()
+        from matplotlib.colors import LogNorm
+        plt.imshow(masterbias, cmap='gray', norm=LogNorm(vmin=minimum, vmax=maximum))
+
+        plt.savefig(fl_out)
+
+
         # MASTERFLAT
         if not os.path.exists(os.path.join(config["folder"], "temp/masterflat.fits")):
             print("create master flat")
@@ -181,7 +201,7 @@ def main():
         
         # PLOT MASTERFLAT
         # Set colorscale
-        minimum = percentile(masterflat, 30)
+        minimum = percentile(masterflat, 5)
         maximum = percentile(masterflat, 95)
 
         print(minimum, maximum)
@@ -239,7 +259,11 @@ def main():
                 #print fits
                 #print(type(fits[0][0]), type(masterbias[0][0]))
 
+                savetxt('before_subtraction.dat', fits)
+
                 fits -= masterbias
+                
+                savetxt('after_subtraction.dat', fits)
 
                 # Mask order
                 fits = extract_order.mask_order(fits,order_masks, binning=binning)
@@ -251,7 +275,12 @@ def main():
                     flat_order = masterflat_extracted[order][0]
                     flat_order /= nanmax(flat_order.flatten())
 
+                    savetxt('before_division.dat', fits)
+    
                     fits[order][0] /= flat_order
+                    
+                    savetxt('after_division.dat', fits)
+                    exit()
                     
                     
                 #fits_shear = thar_straighten.shear_obs(fits,shear_list)
