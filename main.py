@@ -276,11 +276,11 @@ def main():
                     flat_order /= nanmax(flat_order.flatten())
 
                     print('FITS type flat', type(fits), fits)
-                    savetxt('before_division.dat', fits)
+                    savetxt('before_division.dat', nan_to_num(fits))
     
                     fits[order][0] /= flat_order
                     
-                    savetxt('after_division.dat', fits)
+                    savetxt('after_division.dat', nan_to_num(fits))
                     exit()
                     
                     
