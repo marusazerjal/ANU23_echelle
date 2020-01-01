@@ -181,8 +181,8 @@ def main():
         
         # PLOT MASTERFLAT
         # Set colorscale
-        minimum = np.percentile(masterflat, 30)
-        maximum = np.percentile(masterflat, 95)
+        minimum = percentile(masterflat, 30)
+        maximum = percentile(masterflat, 95)
 
         print(minimum, maximum)
 
