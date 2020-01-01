@@ -259,11 +259,11 @@ def main():
                 print('FITS type', type(fits), fits)
                 #print(type(fits[0][0]), type(masterbias[0][0]))
 
-                savetxt('before_subtraction.dat', fits)
+                savetxt('before_subtraction.dat', nan_to_num(fits))
 
                 fits -= masterbias
                 
-                savetxt('after_subtraction.dat', fits)
+                savetxt('after_subtraction.dat', nan_to_num(fits))
 
                 # Mask order
                 fits = extract_order.mask_order(fits,order_masks, binning=binning)
