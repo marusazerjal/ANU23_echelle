@@ -256,7 +256,7 @@ def main():
                 thar_shear = extract_order.mask_order(thar,order_masks, binning=binning)
                 fits = pyfits.getdata(obslist[0][i])[:,ccdsec_min:ccdsec_max]
                 fits = fits.astype(float64) # Marusa
-                #print fits
+                print('FITS type', type(fits), fits)
                 #print(type(fits[0][0]), type(masterbias[0][0]))
 
                 savetxt('before_subtraction.dat', fits)
