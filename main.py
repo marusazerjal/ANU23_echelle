@@ -275,6 +275,7 @@ def main():
                     flat_order = masterflat_extracted[order][0]
                     flat_order /= nanmax(flat_order.flatten())
 
+                    print('FITS type flat', type(fits), fits)
                     savetxt('before_division.dat', fits)
     
                     fits[order][0] /= flat_order
