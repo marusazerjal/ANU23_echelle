@@ -275,13 +275,14 @@ def main():
                     flat_order = masterflat_extracted[order][0]
                     flat_order /= nanmax(flat_order.flatten())
 
+                    tmp = []
                     print('FITS type flat', type(nan_to_num(fits)), nan_to_num(fits))
-                    savetxt('before_division.dat', nan_to_num(fits))
+                    #~ savetxt('before_division.dat', nan_to_num(fits))
     
                     fits[order][0] /= flat_order
                     
-                    savetxt('after_division.dat', nan_to_num(fits))
-                    exit()
+                    #~ savetxt('after_division.dat', nan_to_num(fits))
+                    #~ exit()
                     
                     
                 #fits_shear = thar_straighten.shear_obs(fits,shear_list)
