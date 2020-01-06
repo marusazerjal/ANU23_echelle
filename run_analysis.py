@@ -310,4 +310,5 @@ if __name__ == "__main__":
 
     folder = config["folder"]#
     #folder = "/media/Onion/Data/ANU23echelle/20181115/bin2/"
-    main(folder, photometry)
+    #~ main(folder, photometry)
+    main(folder)
