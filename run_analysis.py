@@ -187,7 +187,7 @@ def main(folder):
     """
     Photometry should be a dictionary with objectnames and BP-RP
     """
-    path = os.join.path(folder, 'reduced/*.fits')
+    path = os.path.join(folder, 'reduced/*.fits')
     fitslist = sort(glob.glob(path))
     print('folder', path)
     print('FITSLIST', fitslist)
