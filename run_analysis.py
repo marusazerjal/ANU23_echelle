@@ -1,6 +1,8 @@
 import os,sys,glob,string#,pyfits
 from astropy.io import fits as pyfits
 from numpy import *
+import matplotlib
+matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 from astropy import units as u
 from astropy.coordinates import SkyCoord
