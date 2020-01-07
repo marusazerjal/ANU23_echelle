@@ -196,6 +196,7 @@ def main(folder):
     for fits in fitslist:
     #for fits in [fitslist[1]]:
 
+        # If it exists, skip it
         if not os.path.exists(fits+".rv"):
            print fits
 
@@ -279,7 +280,10 @@ def main(folder):
            rvlist,ccfrv = cc_rv.main(fits,template,vsini=vsini)
            rvlist[:,1] += bcorr
            ccfrv += bcorr
-           telrv = cc_rv.measure_telluric_rv(fits,template,vsini,lsdshift)
+           try:
+              telrv = cc_rv.measure_telluric_rv(fits,template,vsini,lsdshift)
+           except:
+              telrv=-999
 
            print("CCF RV",ccfrv)
 
