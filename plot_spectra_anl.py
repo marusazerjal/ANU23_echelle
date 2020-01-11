@@ -274,7 +274,7 @@ def plot_O2gamma(spectrum_array,ax):
     plt.ylabel("ADU",fontsize=15,weight="black")    
 
     
-def main(spectrum_file,template_file,teff,logg,feh,vsini,shift):
+def main(spectrum_file,template_file,teff,logg,feh,vsini,shift, prefix=None):
     ### format the spectrum file
     spectrum_hdulist = fits.open(spectrum_file)
     ra,dec,objectname = spectrum_hdulist[0].header["RA"], spectrum_hdulist[0].header["DEC"], spectrum_hdulist[0].header["OBJECT"]
@@ -349,8 +349,11 @@ def main(spectrum_file,template_file,teff,logg,feh,vsini,shift):
     plot_O2gamma(spectrum_array,ax)
     plt.title("O2-Gamma")
     
-    
-    plt.savefig(spectrum_path+spectrum_name+".pdf")
+    if prefix==None:
+        outname = spectrum_path+spectrum_name+".pdf"
+    else:
+        outname = spectrum_path+spectrum_name+".test.pdf"
+    plt.savefig(outname)
 
 if __name__ == "__main__":
     
