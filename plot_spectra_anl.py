@@ -128,10 +128,11 @@ def plotMgb(spectrum_array,template,ax,teff,logg,feh,vsini=12,vshift=0):
     vprof /= sum(vprof)
     template_f = convolve(template[:,1][template_mask],vprof,mode="same")
 
-    print('vsini', vsini)
+    print('vsini', vsini, vprof)
     print('template', template)
     print('template_f', template_f)
     plt.plot(template[:,0][template_mask],template_f,color="r")
+    plt.plot(template[:,0][template_mask],template[:,1][template_mask],color="g")
 
     plt.xlim(5100,5300)
     plt.ylim(0.02,1.2)
