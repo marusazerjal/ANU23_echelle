@@ -118,7 +118,7 @@ def plotMgb(spectrum_array,template,ax,teff,logg,feh,vsini=12,vshift=0):
 
     template_mask = template[:,0] > 5000
     template_mask *= template[:,0] < 5400
-
+    print('MASK', np.sum(template_mask))
 
     vaxis = template[:,0][template_mask]
     vaxis = c*(vaxis-median(vaxis))/vaxis
