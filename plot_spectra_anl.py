@@ -110,7 +110,7 @@ def plotMgb(spectrum_array,template,ax,teff,logg,feh,vsini=12,vshift=0):
     spec = []
     for order in range(len(spectrum_array)):
         if max(spectrum_array[order][:,0]) > 5100 and min(spectrum_array[order][:,0]) < 5300:
-            print order
+            print('order', order)
             spec_normed = spectrum_array[order].copy()
             #spec_normed[:,1] = normalise(spec_normed[:,1],niter=5,sigma_low = 0.05,deg=5)
             spec_normed = normalise_with_template(spec_normed,template.copy(),vsini=vsini,vshift=vshift)
