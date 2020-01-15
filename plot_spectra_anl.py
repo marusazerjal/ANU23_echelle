@@ -286,6 +286,8 @@ def main(spectrum_file,template_file,teff,logg,feh,vsini,shift, prefix=None):
     
     spectrum_name = os.path.basename(spectrum_file)
     spectrum_path = string.replace(spectrum_file,spectrum_name,"")
+    
+    print('here-1')
 
     lsd_list,lsd_master,dummy,dummy = pickle.load(open(spectrum_path+"lsd_"+spectrum_name+".pkl","rb"))
 
@@ -307,6 +309,8 @@ def main(spectrum_file,template_file,teff,logg,feh,vsini,shift, prefix=None):
             minwave = min(wave)
             
         spectrum_array.append(transpose(array([wave,flux])))
+
+    print('here0')
 
 
     ### CREATE GRID FOR SPECTRUM
