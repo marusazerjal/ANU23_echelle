@@ -198,7 +198,7 @@ def main(folder):
 
         # If it exists, skip it
         if not os.path.exists(fits+".rv"):
-           print fits
+           print(fits)
 
            fitsheader = pyfits.getheader(fits)
            objectname = fitsheader["OBJECT"]
@@ -206,7 +206,7 @@ def main(folder):
            hjd = fitsheader["HJD"]
            bcorr = fitsheader["BCORR"]
            exptime = fitsheader["EXPTIME"]
-           print 'objectname', objectname
+           print('objectname', objectname)
 
            c = SkyCoord(ra+" "+dec, frame='icrs', unit=(u.hourangle, u.deg))
 

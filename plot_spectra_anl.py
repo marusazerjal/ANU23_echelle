@@ -325,6 +325,7 @@ def main(spectrum_file,template_file,teff,logg,feh,vsini,shift, prefix=None):
     plot_ccf(spectrum_array,template_array,ax,vsini=vsini,vshift=shift)
     plt.title("Non-rotating template correlation")
 
+    print('here1')
 
     ### Plot the lsd profile
     ax = plt.subplot(gs[1, 1])
@@ -341,6 +342,8 @@ def main(spectrum_file,template_file,teff,logg,feh,vsini,shift, prefix=None):
     ax = plt.subplot(gs[1, 2])
     plot_NaD(spectrum_array,ax)
     plt.title("Na-D")
+    
+    print('here2')
 
     if minwave < 4000:
         ### Plot the CaHK profile
