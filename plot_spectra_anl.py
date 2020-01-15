@@ -279,6 +279,7 @@ def plot_O2gamma(spectrum_array,ax):
 
     
 def main(spectrum_file,template_file,teff,logg,feh,vsini,shift, prefix=None):
+    print('here-100')
     ### format the spectrum file
     spectrum_hdulist = fits.open(spectrum_file)
     ra,dec,objectname = spectrum_hdulist[0].header["RA"], spectrum_hdulist[0].header["DEC"], spectrum_hdulist[0].header["OBJECT"]
