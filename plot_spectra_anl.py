@@ -133,6 +133,7 @@ def plotMgb(spectrum_array,template,ax,teff,logg,feh,vsini=12,vshift=0):
     print('template_f', template_f)
     plt.plot(template[:,0][template_mask],template_f,color="r")
     plt.plot(template[:,0][template_mask],template[:,1][template_mask],color="g")
+    plt.plot(template[:,0], template[:,1], color="g")
 
     plt.xlim(5100,5300)
     plt.ylim(0.02,1.2)
@@ -190,8 +191,6 @@ def plot_ccf(spectrum_array,template,ax,vsini=10,vshift=0):
     plt.ylim(-0.1,1.1)
 
     plt.xlabel("Shift (km/s)",fontsize=15,weight="black")
-
-
 
 
 def plot_lsd(lsd_master,ax,vsini=10,vshift=0):
