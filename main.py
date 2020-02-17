@@ -31,6 +31,7 @@ print('CONFIG FILENAME', config_filename)
 config_file = imp.load_source(config_filename.replace('.py', ''), config_filename)
 config = config_file.set_config()
 
+import pdb
 
 # Check if RV_standards includes only one line per a unique object.
 # E.g. if someone adds a line with the same object name, the code
