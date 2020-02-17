@@ -268,7 +268,7 @@ def main():
 
                 # Mask order
                 fits = extract_order.mask_order(fits,order_masks, binning=binning)
-                pdb.set_trace() # 'fits' looks OK here
+                #~ pdb.set_trace() # 'fits' looks OK here
 
                 # import copy
                 fits_noflat = copy.deepcopy(fits)
