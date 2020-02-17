@@ -246,7 +246,7 @@ def iterate_whole_spectrum(spectrum):
 
     initial_solutions = zeros((10,3))
     
-    pdb.set_trace()
+    #~ pdb.set_trace()
     
     ### do the first order
     print("finding initial solution for order 0")
