@@ -268,7 +268,7 @@ def main():
 
                 # Mask order
                 fits = extract_order.mask_order(fits,order_masks, binning=binning)
-                pdb.set_trace()
+                pdb.set_trace() # 'fits' looks OK here
 
                 # import copy
                 fits_noflat = copy.deepcopy(fits)
@@ -286,11 +286,13 @@ def main():
                     #~ savetxt('after_division.dat', nan_to_num(fits))
                     #~ exit()
                     
-                pdb.set_trace()
+                
                 #fits_shear = thar_straighten.shear_obs(fits,shear_list)
                 #fits_noflat_shear = thar_straighten.shear_obs(fits_noflat,shear_list)
                 fits_shear = fits
                 fits_noflat_shear = fits_noflat
+                
+                pdb.set_trace() # 'fits' looks OK here
 
                 #pickle.dump(thar_shear,open(config["folder"]+"/temp/"+fitsname+".thar.pkl","wb"))
                 #pickle.dump(fits_shear,open(config["folder"]+"/temp/"+fitsname+".shear.pkl","wb"))
