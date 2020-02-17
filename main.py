@@ -306,23 +306,24 @@ def main():
                 print('TRACE_ARRAY')
                 print(trace_array)
 
+                # It seems fine here.
                 pdb.set_trace()
 
                 print("extracting spectra")
                 print(fits_shear)
                 print(len(fits_shear))
                 print(len(trace_array))
-                spectrum,background = extract_order.extract_trace(fits_shear,trace_array)
+                spectrum,background = extract_order.extract_trace(fits_shear,trace_array) # spectrum is fine, background is negative
                 pdb.set_trace()
                 print('spectrum(extract_order.extract_trace)', spectrum)
-                spectrum_noflat,background_noflat = extract_order.extract_trace(fits_noflat_shear,trace_array)
+                spectrum_noflat,background_noflat = extract_order.extract_trace(fits_noflat_shear,trace_array) # this looks fine
                 print('spectrum_noflat(extract_order.extract_trace)', spectrum_noflat)
                 pdb.set_trace()
                 tharspec,bk = extract_order.extract_trace(thar_shear,trace_array)
                 for i in range(len(tharspec)):
                     tharspec[i] += bk[i]
 
-                print('final spectrum', spectrum)
+                print('final spectrum', spectrum) # this seems to be OK
                 pdb.set_trace()
 
                 pickle_filename = os.path.join(config["folder"], "temp/", fitsname+".spec.pkl")
@@ -334,7 +335,7 @@ def main():
     print("Creating fits files") # Produces ANU..fits files in the temp/ folder.
     print('obslist', obslist)
     print('tharlist', tharlist)
-    average_adjacent_obs.average_adjacent_obs(obslist,tharlist,config["folder"])
+    average_adjacent_obs.average_adjacent_obs(obslist,tharlist,config["folder"]) # THIS IS WHERE SOMETHING GOES WRONG!
     
     print('\n\ndo wavecal_all')
     wavecal_all.main(config["folder"], config=config)

@@ -123,6 +123,8 @@ def average_adjacent_obs(obslist,tharlist,folder):
 
     obslist_jd = array(obslist[1])
     
+    print('FOLDER', folder)
+    
     for i in range(len(tharlist[0])-1):
         obsindx = []
         objname = []
