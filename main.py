@@ -267,6 +267,7 @@ def main():
 
                 # Mask order
                 fits = extract_order.mask_order(fits,order_masks, binning=binning)
+                pdb.set_trace()
 
                 # import copy
                 fits_noflat = copy.deepcopy(fits)
@@ -281,10 +282,10 @@ def main():
     
                     fits[order][0] /= flat_order
                     
-                    savetxt('after_division.dat', nan_to_num(fits))
+                    #~ savetxt('after_division.dat', nan_to_num(fits))
                     #~ exit()
                     
-                    
+                pdb.set_trace()
                 #fits_shear = thar_straighten.shear_obs(fits,shear_list)
                 #fits_noflat_shear = thar_straighten.shear_obs(fits_noflat,shear_list)
                 fits_shear = fits
@@ -302,19 +303,24 @@ def main():
                 print('TRACE_ARRAY')
                 print(trace_array)
 
+                pdb.set_trace()
+
                 print("extracting spectra")
                 print(fits_shear)
                 print(len(fits_shear))
                 print(len(trace_array))
                 spectrum,background = extract_order.extract_trace(fits_shear,trace_array)
+                pdb.set_trace()
                 print('spectrum(extract_order.extract_trace)', spectrum)
                 spectrum_noflat,background_noflat = extract_order.extract_trace(fits_noflat_shear,trace_array)
                 print('spectrum_noflat(extract_order.extract_trace)', spectrum_noflat)
+                pdb.set_trace()
                 tharspec,bk = extract_order.extract_trace(thar_shear,trace_array)
                 for i in range(len(tharspec)):
                     tharspec[i] += bk[i]
 
                 print('final spectrum', spectrum)
+                pdb.set_trace()
 
                 pickle_filename = os.path.join(config["folder"], "temp/", fitsname+".spec.pkl")
                 print 'DUMP pickle', pickle_filename
