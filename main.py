@@ -31,8 +31,6 @@ print('CONFIG FILENAME', config_filename)
 config_file = imp.load_source(config_filename.replace('.py', ''), config_filename)
 config = config_file.set_config()
 
-import pdb
-
 # Check if RV_standards includes only one line per a unique object.
 # E.g. if someone adds a line with the same object name, the code
 # later crashes.
@@ -268,7 +266,6 @@ def main():
 
                 # Mask order
                 fits = extract_order.mask_order(fits,order_masks, binning=binning)
-                #~ pdb.set_trace() # 'fits' looks OK here
 
                 # import copy
                 fits_noflat = copy.deepcopy(fits)
@@ -291,8 +288,6 @@ def main():
                 #fits_noflat_shear = thar_straighten.shear_obs(fits_noflat,shear_list)
                 fits_shear = fits
                 fits_noflat_shear = fits_noflat
-                
-                pdb.set_trace() # 'fits' looks OK here
 
                 #pickle.dump(thar_shear,open(config["folder"]+"/temp/"+fitsname+".thar.pkl","wb"))
                 #pickle.dump(fits_shear,open(config["folder"]+"/temp/"+fitsname+".shear.pkl","wb"))
@@ -306,25 +301,19 @@ def main():
                 print('TRACE_ARRAY')
                 print(trace_array)
 
-                # It seems fine here.
-                pdb.set_trace()
-
                 print("extracting spectra")
                 print(fits_shear)
                 print(len(fits_shear))
                 print(len(trace_array))
                 spectrum,background = extract_order.extract_trace(fits_shear,trace_array) # spectrum is fine, background is negative
-                pdb.set_trace()
                 print('spectrum(extract_order.extract_trace)', spectrum)
                 spectrum_noflat,background_noflat = extract_order.extract_trace(fits_noflat_shear,trace_array) # this looks fine
                 print('spectrum_noflat(extract_order.extract_trace)', spectrum_noflat)
-                pdb.set_trace()
                 tharspec,bk = extract_order.extract_trace(thar_shear,trace_array)
                 for i in range(len(tharspec)):
                     tharspec[i] += bk[i]
 
                 print('final spectrum', spectrum) # this seems to be OK
-                pdb.set_trace()
 
                 pickle_filename = os.path.join(config["folder"], "temp/", fitsname+".spec.pkl")
                 print 'DUMP pickle', pickle_filename
