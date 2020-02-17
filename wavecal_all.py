@@ -12,6 +12,8 @@ import identify_order_solarspec
 import wavesolve2 as wavesolve
 import fitarc_chebyshev
 
+import pdb
+
 import pandas
 rv_standards = pandas.read_csv("RV_standard.dat",delim_whitespace=True)
 
@@ -57,6 +59,8 @@ def main(folder, config=None):
         print('V_r', rv_standards[mask]["V_r"], 'END')
         truerv = float(rv_standards[mask]["V_r"])
         print("rv standard",objectname,truerv,bcorr)
+        
+        pdb.bset_trace()
         
         initial_solutions = identify_order_solarspec.iterate_whole_spectrum(init_wave_spec)
         savetxt(folder+"/temp/init_solutions",array(initial_solutions))
