@@ -231,6 +231,7 @@ def average_adjacent_obs(obslist,tharlist,folder):
                           pdb.set_trace()
                           indx = arange(len(spec[i]))
                           
+                          # If masking is needed for some of the pixels:
                           if sum(mask) > 0 and sum(mask)<len(spec[i]):
                              print 'sum(mask)', sum(mask)
                              for j in indx[mask]:
@@ -241,11 +242,13 @@ def average_adjacent_obs(obslist,tharlist,folder):
                                 if fixval != fixval or abs(fixval) == inf:
                                    fixval = nanmedian(spec[i])
                                 spec[i][j] = fixval
+                          
+                          # if masking is needed for the entire spectrum:
                           elif sum(mask)==len(spec[i]):
                                 print 'sum(mask)', sum(mask), 'setting to 0'
                                 spec[i] = zeros(len(spec[i]))
                           else:
-                                print('SUM ELSE', np.sum(mask))
+                                print('SUM ELSE (masking not needed)', sum(mask))
                       except:
                           print 'len0', 'setting to 0'
                           spec[i] = zeros(2042) # HARDCODED
