@@ -7,7 +7,7 @@ from astropy.io import fits as pyfits
 from scipy import interpolate,optimize,signal,stats
 from PyAstronomy import pyasl
 
-import pdb
+#~ import pdb
 
 c = 3*10**5.
 
@@ -60,7 +60,7 @@ def normalise(spec,niter=2,sigma_low = 0.05,deg=5):
     #~ x = arange(len(spec_iter)) # MZ: added this line
     x_iter = x.copy()
 
-    pdb.set_trace()
+    #~ pdb.set_trace()
 
     i = 0
     while i < niter:
@@ -82,7 +82,7 @@ def normalise(spec,niter=2,sigma_low = 0.05,deg=5):
             pass
         i += 1
 
-    pdb.set_trace()
+    #~ pdb.set_trace()
 
     fit = polyfit(x_iter,spec_iter,deg)
     fit = polyval(fit,x)
@@ -126,7 +126,7 @@ def cross_correlation_to_find_sol(spec,testwave_centre=6500,testwave_width=300,t
     mask = xpos > min(xpos)+150
     mask *= xpos < max(xpos)-150
 
-    pdb.set_trace()
+    #~ pdb.set_trace()
 
     print 'MZ: If this fails then the spectrum might not look like a spectrum but something weird. Does "trace order" work?'
 
