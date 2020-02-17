@@ -228,7 +228,7 @@ def average_adjacent_obs(obslist,tharlist,folder):
                       
                       try:
                           print 'NANCHECK', i, len(spec[i]), spec[i], mask, ~any(mask)
-                          pdb.set_trace()
+                          #~ pdb.set_trace()
                           indx = arange(len(spec[i]))
                           
                           # If masking is needed for some of the pixels:
