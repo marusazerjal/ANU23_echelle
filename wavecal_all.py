@@ -60,7 +60,7 @@ def main(folder, config=None):
         truerv = float(rv_standards[mask]["V_r"])
         print("rv standard",objectname,truerv,bcorr)
         
-        pdb.bset_trace()
+        pdb.set_trace()
         
         initial_solutions = identify_order_solarspec.iterate_whole_spectrum(init_wave_spec)
         savetxt(folder+"/temp/init_solutions",array(initial_solutions))
