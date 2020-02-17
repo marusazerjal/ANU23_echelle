@@ -246,6 +246,8 @@ def iterate_whole_spectrum(spectrum):
 
     initial_solutions = zeros((10,3))
     
+    pdb.set_trace()
+    
     ### do the first order
     print("finding initial solution for order 0")
     x0 = cross_correlation_to_find_sol(spectrum[0],testwave_centre=6700,testwave_width=300,testdelta_centre=-0.095,testdelta_width=0.005,toplot=False)
