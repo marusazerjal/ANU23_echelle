@@ -60,6 +60,8 @@ def normalise(spec,niter=2,sigma_low = 0.05,deg=5):
     #~ x = arange(len(spec_iter)) # MZ: added this line
     x_iter = x.copy()
 
+    pdb.set_trace()
+
     i = 0
     while i < niter:
         if len(x_iter)>0: # MZ
