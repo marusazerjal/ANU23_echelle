@@ -9,7 +9,7 @@ import matplotlib
 matplotlib.use('Agg')
 
 
-
+import pdb
 
 # Convert HH:MM:SS.SSS into Degrees :
 def convHMS(ra):
@@ -228,6 +228,7 @@ def average_adjacent_obs(obslist,tharlist,folder):
                       
                       try:
                           print 'NANCHECK', i, len(spec[i]), spec[i], mask, ~any(mask)
+                          pdb.set_trace()
                           indx = arange(len(spec[i]))
                           
                           if sum(mask) > 0 and sum(mask)<len(spec[i]):
