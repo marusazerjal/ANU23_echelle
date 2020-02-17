@@ -281,7 +281,7 @@ def main():
     
                     fits[order][0] /= flat_order
                     
-                    #~ savetxt('after_division.dat', nan_to_num(fits))
+                    savetxt('after_division.dat', nan_to_num(fits))
                     #~ exit()
                     
                     
@@ -299,15 +299,22 @@ def main():
                 plt.clf()
                 pickle.dump(trace_array, open(os.path.join(config["folder"], "temp/", fitsname+".trace.pkl"),"wb"))
 
+                print('TRACE_ARRAY')
+                print(trace_array)
+
                 print("extracting spectra")
                 print(fits_shear)
                 print(len(fits_shear))
                 print(len(trace_array))
                 spectrum,background = extract_order.extract_trace(fits_shear,trace_array)
+                print('spectrum(extract_order.extract_trace)', spectrum)
                 spectrum_noflat,background_noflat = extract_order.extract_trace(fits_noflat_shear,trace_array)
+                print('spectrum_noflat(extract_order.extract_trace)', spectrum_noflat)
                 tharspec,bk = extract_order.extract_trace(thar_shear,trace_array)
                 for i in range(len(tharspec)):
                     tharspec[i] += bk[i]
+
+                print('final spectrum', spectrum)
 
                 pickle_filename = os.path.join(config["folder"], "temp/", fitsname+".spec.pkl")
                 print 'DUMP pickle', pickle_filename
