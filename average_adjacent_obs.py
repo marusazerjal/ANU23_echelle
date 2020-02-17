@@ -123,7 +123,7 @@ def average_adjacent_obs(obslist,tharlist,folder):
 
     obslist_jd = array(obslist[1])
     
-    print('FOLDER', folder)
+    #~ print('FOLDER', folder)
     
     for i in range(len(tharlist[0])-1):
         obsindx = []
@@ -131,23 +131,24 @@ def average_adjacent_obs(obslist,tharlist,folder):
         print 'thar', tharlist[0][i]
         for j in range(len(obslist[1])):
             fitsname = os.path.basename(obslist[0][j])
-            print fitsname
+            #~ print fitsname
 
             ### return spectra taken between these two thars
             
-            print 'comparison', obslist[1][j], tharlist[1][i], 'iii', obslist[1][j], tharlist[1][i+1]
+            #~ print 'comparison', obslist[1][j], tharlist[1][i], 'iii', obslist[1][j], tharlist[1][i+1]
             
             if obslist[1][j] > tharlist[1][i] and obslist[1][j] < tharlist[1][i+1] and os.path.exists(folder+"/temp/"+fitsname+".spec.pkl"):
-                print 'in the loop', j
+                #~ print 'in the loop', j
                 objname.append(pyfits.getheader(obslist[0][j])["OBJECT"])
                 obsindx.append(j)
 
-        print'obsindx', obsindx
+        #~ print'obsindx', obsindx
 
         if len(obsindx) > 0:
 
             objectlist = unique(objname)
-            print objectlist
+            print(fitsname)
+            print(objectlist)
 
             for obj in objectlist:
                 
@@ -172,7 +173,7 @@ def average_adjacent_obs(obslist,tharlist,folder):
                         background_noflat_list.append(spec[4])
 
                 header,fitsTIME = combine_header(header_list)
-                print obj,len(spectrum_list)
+                print('obj', obj,'len(spectrum_list)', len(spectrum_list))
                         
                 if len(spectrum_list) == 1:
                     spectrum_master,background_master,thar_master,spectrum_noflat_master,background_noflat_master = spectrum_list[0],background_list[0],thar_list[0],spectrum_noflat_list[0],background_noflat_list[0]
@@ -253,8 +254,9 @@ def average_adjacent_obs(obslist,tharlist,folder):
                    return spec
 
 
-                  
+                print('spectrum_master before nancheck', spectrum_master)
                 spectrum_master = nanchecks(spectrum_master)
+                print('spectrum_master after nancheck', spectrum_master)
                 background_master = nanchecks(background_master)
                 thar_master = nanchecks(thar_master)
                 spectrum_noflat_master = nanchecks(spectrum_noflat_master)
