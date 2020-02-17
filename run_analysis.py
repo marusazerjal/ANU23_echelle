@@ -16,7 +16,7 @@ import spectype
 #from astroquery.vizier import Vizier
 from astroquery.gaia import Gaia
 
-import prepare_synthetic_templates
+#import prepare_synthetic_templates
 
 import warnings
 warnings.filterwarnings("ignore")
@@ -321,3 +321,4 @@ if __name__ == "__main__":
     #folder = "/media/Onion/Data/ANU23echelle/20181115/bin2/"
     #~ main(folder, photometry)
     main(folder)
+    print('DONE.')

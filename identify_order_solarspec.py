@@ -7,6 +7,8 @@ from astropy.io import fits as pyfits
 from scipy import interpolate,optimize,signal,stats
 from PyAstronomy import pyasl
 
+import pdb
+
 c = 3*10**5.
 
 solar_template = loadtxt("sky_template.dat")
@@ -77,6 +79,8 @@ def normalise(spec,niter=2,sigma_low = 0.05,deg=5):
         else:
             pass
         i += 1
+
+    pdb.set_trace()
 
     fit = polyfit(x_iter,spec_iter,deg)
     fit = polyval(fit,x)
